@@ -13,7 +13,7 @@
  * Incomplete languages will automatically be filled up with English translations first, and if no English translation
  * is available, fallback will take place to German.
 */
-#define LANG DE
+#define LANG EN
 
 /*
 Allow to initialize program configuration by reading settings from EEPROM
@@ -52,8 +52,8 @@ char mDNS_hostname[32] = "BSB-LAN";     // Advertises the hostname in the local 
  * See here for a full list of timezones for places all over the world:
  * https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
 */
-const char ntp_server[20] = "pool.ntp.org"; // Set to empty string in case you don't want to use NTP
-const char local_timezone[30] = "CET-1CEST,M3.5.0,M10.5.0/3";
+const char ntp_server[20] = "uk.pool.ntp.org"; // Set to empty string in case you don't want to use NTP
+const char local_timezone[30] = "GMT0BST,M3.5.0/1,M10.5.0";
 
 /* SECURITY OPTIONS
  * There are several options to control and protect access to your heating system. However, keep
@@ -110,7 +110,7 @@ byte dest_address = 0x00;
 bool pps_write = 0;
 byte QAA_TYPE = 0x53;  // 0x53 = QAA70, 0x52 = QAA50, 0x37 = QAA95, 0x4D = QAW10, 0x4E = QAW20, 0x58 = MCBA/REA70/DC225, 0x5A = QAA10, 0x5B = QAA20, 0x5D = QAA12/13, 0x66 = BMU, 0x43 = RVD130
 // Setting bus pins
-byte bus_pins[2] = {0,0}; //First value - RX pin, second value - TX pin. 0,0 - auto select (19,18 for Due, 16,17 for NodeMCU, 36,17 for Olimex EVB, 36,5 for Olimex POE and 68,69 for Mega).
+byte bus_pins[2] = {36,4}; //First value - RX pin, second value - TX pin
 
 // defines default flag for parameters
 // use "#define DEFAULT_FLAG FL_SW_CTL_RONLY" to control read/write functionality via configuration in web interface.
@@ -159,7 +159,8 @@ parameter log_parameters[40] = {
 //  {20500, -1}                  // Spezialparameter 20500-20699: MAX!-Sensoren 1-50
 };
 
-char mqtt_broker_addr[33] = "192.168.178.20:1883";    // MQTT broker. Adjust LoggingMode to activate. Can be IP address or hostname. Optional port can be specified after trailing colon. If omitted, port defaults to 1883.
+// Compile MQTT extension: activate sending log_parameters to MQTT broker every log_interval seconds
+char mqtt_broker_addr[33] = "homeassistant.local:1883"; // MQTT broker. Adjust LoggingMode to activate. Can be IP address or hostname. Optional port can be specified after trailing colon. If omitted, port defaults to 1883.
 char MQTTUsername[65] = "User";                 // Set username for MQTT broker here or set empty string if no username/password is used.
 char MQTTPassword[65] = "Pass";                 // Set password for MQTT broker here or set empty string if no password is used.
 char MQTTTopicPrefix[65] = "BSB-LAN"; 	        // Mandatory: Choose the "topic" for MQTT messages here.
@@ -175,14 +176,14 @@ byte mqtt_mode = 1; // MQTT: 1 - send messages in plain text format, 2 - send me
 // Finally CF_MQTT_UNIT_NONE will send MQTT messags with no unit text.
 // This setting does not affect the web interface which will always show units in the localized language.
 // When selecting Home Assistant as the unit format, the 'device_class' string will be sent for compatible parameters during MQTT auto-discovery so that automations can correctly identify sensor classes.
-byte mqtt_unit_set = CF_MQTT_UNIT_LOCALIZED; // Unit localisation option for MQTT messages. Options are: CF_MQTT_UNIT_LOCALIZED, CF_MQTT_UNIT_HOMEASSISTANT, CF_MQTT_UNIT_NONE
+byte mqtt_unit_set = CF_MQTT_UNIT_HOMEASSISTANT; // Unit localisation option for MQTT messages. Options are: CF_MQTT_UNIT_LOCALIZED, CF_MQTT_UNIT_HOMEASSISTANT, CF_MQTT_UNIT_NONE
 
 // Optional: Define a device name to use as header in json payload. In case of empty string, "BSB-LAN" will be used.
 // This value is also used as a client ID towards the MQTT broker, change it if you have more than one BSB-LAN on your broker.
 char MQTTDeviceID[32] = "BSB-LAN";
 
 // Logging mode: 0 - disabled, 1 - write values to SD card, 2 - write 24h averages to SD card, 4 - send values to MQTT, 8 - send only logged parameter values to MQTT broker, 16 -  send values to UDP. Can be any sum of these values.
-byte LoggingMode = 0; //CF_LOGMODE_SD_CARD | CF_LOGMODE_24AVG | CF_LOGMODE_MQTT | CF_LOGMODE_MQTT_ONLY_LOG_PARAMS | CF_LOGMODE_UDP
+byte LoggingMode = CF_LOGMODE_MQTT; //CF_LOGMODE_SD_CARD | CF_LOGMODE_24AVG | CF_LOGMODE_MQTT | CF_LOGMODE_MQTT_ONLY_LOG_PARAMS | CF_LOGMODE_UDP
 
 // Create 24h averages from these parameters and save data into averages.txt on SD-card.
 parameter avg_parameters[40] = {
@@ -192,7 +193,7 @@ parameter avg_parameters[40] = {
 };
 
 // In parameters with numerical values, this setting defines the value for a deactivated/inactive status. Defaults to "---", Home Assistant requires "None", other systems might require "0" to function properly.
-char replaceDisabled[10] = "---";
+char replaceDisabled[10] = "None";
 
 // Define the pin for one wire temperature sensors. -1 = disable oneWire bus.
 int8_t One_Wire_Pin = -1;
