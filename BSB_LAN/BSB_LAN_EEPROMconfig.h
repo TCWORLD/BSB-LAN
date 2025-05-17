@@ -90,8 +90,9 @@ typedef enum{
 //Maximum version can be 65534 (0xFFFE). In other case initConfigTable() will locked in infinite loop
 //Maximum options count can be 253 for same reason (or must changing uint8_t type to uint16_t)
 // Version 14 (remove fixed device family/variant)
-// Version 15 (control MQTT unit set)
-  CF_MQTT_UNITS, //Size: 1 byte. Unit of measure for MQTT: 0 - Localized, 1 - Home Assistant, 255 - None
+// Version 15 (control MQTT unit set, custom config region)
+  CF_MQTT_UNITS, //Size: 1 byte. Unit of measure for MQTT: 0 - Localised, 1 - Home Assistant, 255 - none
+  CF_CUSTOM_EEPROM, //Size: 4 * 20 bytes. Region to support custom code storing persistent values. Accessed via 'custom_eeprom' array
   CF_LAST_OPTION //Virtual option. Must be last in enum. Only for internal usage.
 } cf_params;
 
@@ -238,6 +239,7 @@ const configuration_struct config[]={
   {CF_VERBOSE,          3, CCAT_DEBUG,    CPI_DROPDOWN,  CDT_BYTE,           OPT_FL_ADVANCED, CF_VERBOSE_TXT, sizeof(verbose)},
   {CF_SHOW_UNKNOWN,     7, CCAT_DEBUG,    CPI_SWITCH,    CDT_BYTE,           OPT_FL_ADVANCED, CF_SHOW_UNKNOWN_TXT, sizeof(show_unknown)},//immediately apply
   {CF_DUMMY,           14, CCAT_DEBUG,    CPI_NOTHING,   CDT_VOID,           OPT_FL_BASIC|OPT_FL_ADVANCED, CF_SHOW_UNKNOWN_TXT, sizeof(byte)},// dummy variable for forcing new EEPROM schema version
+  {CF_CUSTOM_EEPROM,   15, CCAT_GENERAL,  CPI_NOTHING,   CDT_VOID,           OPT_FL_BASIC|OPT_FL_ADVANCED, NULL, sizeof(custom_eeprom)},//immediately apply
 };
 
 typedef struct{

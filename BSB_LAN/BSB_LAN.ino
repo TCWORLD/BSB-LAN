@@ -446,6 +446,7 @@ unsigned long custom_timer = millis();
 unsigned long custom_timer_compare = 0;
 float custom_floats[20] = { 0 };
 long custom_longs[20] = { 0 };
+long custom_eeprom[20] = { 0 }; 
 
 static const int numLogValues = sizeof(log_parameters) / sizeof(log_parameters[0]);
 static const int numCustomFloats = sizeof(custom_floats) / sizeof(custom_floats[0]);
@@ -7525,6 +7526,7 @@ active_cmdtbl_size = sizeof(cmdtbl)/sizeof(cmdtbl[0]);
   registerConfigVariable(CF_RX_PIN, (byte *)&bus_pins[0]);
   registerConfigVariable(CF_TX_PIN, (byte *)&bus_pins[1]);
   registerConfigVariable(CF_CONFIG_LEVEL, (byte *)&config_level);
+  registerConfigVariable(CF_CUSTOM_EEPROM, (byte *)&custom_eeprom);
 
   readFromEEPROM(CF_PPS_VALUES);
   byte UseEEPROM_in_config_h = UseEEPROM;
