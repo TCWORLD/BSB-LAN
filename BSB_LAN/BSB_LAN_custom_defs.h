@@ -3,7 +3,7 @@
 #define S501_0_TEXT "Heating cycle"
 #define S516_0_TEXT "Standard values TSP"
 #define S561_0_TEXT "Domestic water cycle"
-#define S700_0_TEXT ""
+#define S700_0_TEXT "Heating mode"
 #define S710_0_TEXT "Comfort setpoint "
 #define S712_0_TEXT "Room temp reduced setpoint"
 #define S714_0_TEXT "Room temp protective setpoint cooling circuit 1"
@@ -20,7 +20,7 @@
 #define S851_0_TEXT "Floor setpoint manually"
 #define S856_0_TEXT "Flooring plaster dry up day"
 #define S857_0_TEXT "Floor curing days fulfilled"
-#define S1600_0_TEXT ""
+#define S1600_0_TEXT "DHW mode"
 #define S1610_0_TEXT "DHW temperature nominal setpoint"
 #define S1612_0_TEXT "DHW temperature reduced setpoint"
 #define S1614_0_TEXT "DHW temperature nominal setpoint max"
@@ -69,7 +69,7 @@
 #define S3169_0_TEXT "Yearly perf factor 8"
 #define S3176_0_TEXT "Yearly perf factor 9"
 #define S3183_0_TEXT "Yearly perf factor 10"
-#define S3692_0_TEXT ""
+#define S3692_0_TEXT "DHW Heat Source"
 #define S3694_0_TEXT "OT limit with DHW charging"
 #define S3700_0_TEXT "Release oil-/gas boil below outside temp thresh"
 #define S3705_0_TEXT "Supplementary source overrun time"
@@ -88,7 +88,7 @@
 #define S5750_0_TEXT "Consumer circuit 1"
 #define S5751_0_TEXT "Consumer circuit 2"
 #define S5806_0_TEXT "Type electric flow"
-#define S5895_0_TEXT ""
+#define S5895_0_TEXT "Backup heater QX5"
 #define S5980_0_TEXT "Function input EX1"
 #define S5981_0_TEXT "Operating action input EX1"
 #define S5982_0_TEXT "Function input EX2"
@@ -261,7 +261,9 @@
 #define E1642_0_05_TEXT "Friday"
 #define E1642_0_06_TEXT "Saturday"
 #define E1642_0_07_TEXT "Sunday"
-#define E3095_0_00_TEXT "None"
+#define E2790_0_00_TEXT "None"
+#define E2790_0_03_TEXT "Temp diff condensor"
+#define E2790_0_05_TEXT "Flow supplementary source"
 #define E3095_0_01_TEXT "With input H1"
 #define E3095_0_02_TEXT "With input H2 module 1"
 #define E3095_0_03_TEXT "With input H2 module 2"
@@ -278,15 +280,30 @@
 #define E3095_0_0e_TEXT "With input H33"
 #define E3102_0_01_TEXT "kWh"
 #define E3102_0_03_TEXT "m3"
+#define E3692_0_00_TEXT "Heat pump only"
+#define E3692_0_01_TEXT "Emergency mode"
+#define E3692_0_02_TEXT "Complement"
+#define E3692_0_04_TEXT "First"
+#define E3692_0_05_TEXT "Alternative heat source only"
 #define E3694_0_00_TEXT "Disregard"
 #define E3694_0_01_TEXT "Note"
 #define E5072_0_00_TEXT "…"
 #define E5072_0_01_TEXT "Recharging"
+#define E5700_0_01_TEXT "1 Radiator Circuit"
+#define E5700_0_02_TEXT "1 Underfloor Circuit"
+#define E5700_0_03_TEXT "2 Radiator Circuits"
+#define E5700_0_04_TEXT "1 Radiator & 1 Underfloor Circuit"
+#define E5700_0_05_TEXT "1 Underfloor & 1  Radiator Circuit"
+#define E5700_0_06_TEXT "2 Underfloor Circuits"
+#define E5700_0_07_TEXT "Heat Pump Slave"
 #define E5703_0_01_TEXT "4 kW"
-#define E5703_0_02_TEXT "6 kW"
-#define E5703_0_03_TEXT "8.5 kW"
-#define E5703_0_04_TEXT "11 kW"
-#define E5703_0_05_TEXT "14 kW"
+#define E5703_0_02_TEXT "5 kW"
+#define E5703_0_03_TEXT "8 kW"
+#define E5703_0_04_TEXT "10 kW"
+#define E5706_0_02_TEXT "DHW Immersion Heater"
+#define E5706_0_03_TEXT "Heat Only"
+#define E5706_0_04_TEXT "Hybrid Combi"
+#define E5706_0_05_TEXT "Hybrid Heat/System"
 #define E5750_0_01_TEXT "Heating"
 #define E5750_0_02_TEXT "4-pipe system cooling"
 #define E5750_0_03_TEXT "2-pipe system cooling"
@@ -295,6 +312,9 @@
 #define E5806_0_03_TEXT "2-stage complementary"
 #define E5806_0_04_TEXT "Modulating UX"
 #define E5806_0_05_TEXT "1-stage"
+#define E5895_0_04_TEXT "Flow immersion heater K25"
+#define E5895_0_0a_TEXT "DHW immersion heater K6"
+#define E5895_0_1e_TEXT "Boiler K27"
 #define E5980_0_01_TEXT "Electricity supplier lock E6"
 #define E5980_0_02_TEXT "Low tariff E5"
 #define E5980_0_04_TEXT "Source overload E14"
@@ -861,6 +881,7 @@
 #define E6700_0_218_TEXT "536:Special sensor 8"
 #define E6700_0_219_TEXT "537:DHW circulation temperature not reached"
 #define E6700_0_21a_TEXT "538:Heat exchanger sensor error"
+#define E6700_0_21b_TEXT "539:Fault supplementary source"
 #define E7131_0_01_TEXT "Low-fire"
 #define E7131_0_02_TEXT "High-fire"
 #define E7131_0_03_TEXT "Max heating load"
@@ -869,6 +890,12 @@
 #define E7202_0_01_TEXT "Heating mode"
 #define E7202_0_02_TEXT "Cooling mode"
 #define E7202_0_03_TEXT "Heating and cooling mode"
+#define E7700_0_00_TEXT "No test"
+#define E7700_0_01_TEXT "Everything off"
+#define E7700_0_05_TEXT "Three way valve"
+#define E7700_0_06_TEXT "Backup Heater"
+#define E7700_0_0f_TEXT "CH1 Pump"
+#define E7700_0_11_TEXT "CH2 Pump"
 #define E8006_0_00_TEXT "---"
 #define E8006_0_01_TEXT "SLT cut out"
 #define E8006_0_02_TEXT "Fault"
@@ -1177,10 +1204,15 @@
 #define E8006_0_135_TEXT "Minimal flow function active"
 #define E8006_0_136_TEXT "Charging photovoltaic"
 #define E8006_0_137_TEXT "Charging lock photovoltaic"
+#define E8006_0_138_TEXT "El charging, photovoltaic"
+#define E8006_0_139_TEXT "Heating photovoltaic"
+#define E8006_0_13a_TEXT "Cooling photovoltaic"
 #define E8458_0_01_TEXT "Draw disabled"
 #define E8458_0_02_TEXT "Draw free"
 #define E8458_0_03_TEXT "Draw wished"
 #define E8458_0_04_TEXT "Draw forced"
+#define E8820_0_00_TEXT "CH"
+#define E8820_0_01_TEXT "DHW"
 #define E6708_0_00_TEXT "11:Serial communication error"
 #define E6708_0_02_TEXT "42:Hydraulic unit heat-exchange thermistor error"
 #define E6708_0_03_TEXT "63:Inverter error"
@@ -1205,6 +1237,15 @@
 #define E6708_0_18_TEXT "9C:Water pump error"
 #define E6708_0_19_TEXT "79:ODUM Water temperature sensor error"
 #define E6708_0_1a_TEXT "7A:Flow meter error"
+#define E6708_0_1b_TEXT "AE:Water flow error"
+#define E6708_0_1c_TEXT "XY: Unknown 28"
+#define E6708_0_1d_TEXT "XY: Unknown 29"
+#define E6708_0_1e_TEXT "XY: Unknown 30"
+#define E6708_0_1f_TEXT "XY: Unknown 31"
+#define E6708_0_20_TEXT "XY: Unknown 32"
+#define E6708_0_21_TEXT "XY: Unknown 33"
+#define E6708_0_22_TEXT "XY: Unknown 34"
+#define E6708_0_23_TEXT "XY: Unknown 35"
 #define E10025P0_0_00_TEXT "0:No maintenance message pending"
 #define E10025P0_0_01_TEXT "1:Burner hours run exeeded"
 #define E10025P0_0_02_TEXT "2:Burner starts exceeded"
@@ -1242,7 +1283,8 @@
 #define E10026P0_0_06_TEXT "DHW setpoint inefficient"
 
 #define E1600_0_00_TEXT E850_0_00_TEXT
-#define E3100_0_00_TEXT E3095_0_00_TEXT
+#define E3095_0_00_TEXT E2790_0_00_TEXT
+#define E3100_0_00_TEXT E2790_0_00_TEXT
 #define E3100_0_01_TEXT E3095_0_01_TEXT
 #define E3100_0_05_TEXT E3095_0_05_TEXT
 #define E3100_0_06_TEXT E3095_0_06_TEXT
@@ -1254,11 +1296,14 @@
 #define E3100_0_0c_TEXT E3095_0_0c_TEXT
 #define E3100_0_0d_TEXT E3095_0_0d_TEXT
 #define E3100_0_0e_TEXT E3095_0_0e_TEXT
-#define E3102_0_00_TEXT E3095_0_00_TEXT
-#define E5703_0_00_TEXT E3095_0_00_TEXT
+#define E3102_0_00_TEXT E2790_0_00_TEXT
+#define E5700_0_00_TEXT E2790_0_00_TEXT
+#define E5703_0_00_TEXT E2790_0_00_TEXT
+#define E5706_0_01_TEXT E2790_0_00_TEXT
 #define E5750_0_00_TEXT E850_0_00_TEXT
-#define E5806_0_00_TEXT E3095_0_00_TEXT
-#define E5980_0_00_TEXT E3095_0_00_TEXT
+#define E5806_0_00_TEXT E2790_0_00_TEXT
+#define E5895_0_00_TEXT E2790_0_00_TEXT
+#define E5980_0_00_TEXT E2790_0_00_TEXT
 #define E7202_0_00_TEXT E850_0_00_TEXT
 #define E8006_0_13_TEXT E8006_0_0f_TEXT
 #define E8006_0_19_TEXT E850_0_00_TEXT
@@ -1357,7 +1402,7 @@ const char ENUM_CAT[] = {
 "\x1A " ENUM_CAT_45_TEXT 
 };
 
-// 700 - 
+// 700 - Heating mode
 const char E700_0[] = {
 "\x00 " E700_0_00_TEXT "\0" // Protection
 "\x01 " E700_0_01_TEXT "\0" // Automatic
@@ -1377,7 +1422,7 @@ const char E850_0[] = {
 
 #define E1000_0 E700_0
 #define E1150_0 E850_0
-// 1600 - 
+// 1600 - DHW mode
 const char E1600_0[] = {
 "\x00 " E1600_0_00_TEXT "\0" // Off
 "\x01 " E1600_0_01_TEXT "\0" // On
@@ -1412,6 +1457,9 @@ const char E1642_0[] = {
 
 // 2790 - Condenser pump modulation
 const char E2790_0[] = {
+"\x00 " E2790_0_00_TEXT "\0" // None
+"\x03 " E2790_0_03_TEXT "\0" // Temp diff condensor
+"\x05 " E2790_0_05_TEXT // Flow supplementary source
 };
 
 // 3095 - Flow measurement heat
@@ -1456,8 +1504,13 @@ const char E3102_0[] = {
 "\x03 " E3102_0_03_TEXT // m3
 };
 
-// 3692 - 
+// 3692 - DHW Heat Source
 const char E3692_0[] = {
+"\x00 " E3692_0_00_TEXT "\0" // Heat pump only
+"\x01 " E3692_0_01_TEXT "\0" // Emergency mode
+"\x02 " E3692_0_02_TEXT "\0" // Complement
+"\x04 " E3692_0_04_TEXT "\0" // First
+"\x05 " E3692_0_05_TEXT // Alternative heat source only
 };
 
 // 3694 - OT limit with DHW charging
@@ -1474,20 +1527,32 @@ const char E5072_0[] = {
 
 // 5700 - Heating Circuits N° & Type
 const char E5700_0[] = {
+"\x00 " E5700_0_00_TEXT "\0" // None
+"\x01 " E5700_0_01_TEXT "\0" // 1 Radiator Circuit
+"\x02 " E5700_0_02_TEXT "\0" // 1 Underfloor Circuit
+"\x03 " E5700_0_03_TEXT "\0" // 2 Radiator Circuits
+"\x04 " E5700_0_04_TEXT "\0" // 1 Radiator & 1 Underfloor Circuit
+"\x05 " E5700_0_05_TEXT "\0" // 1 Underfloor & 1  Radiator Circuit
+"\x06 " E5700_0_06_TEXT "\0" // 2 Underfloor Circuits
+"\x07 " E5700_0_07_TEXT // Heat Pump Slave
 };
 
 // 5703 - Outdoor Unit Power Rating
 const char E5703_0[] = {
 "\x00 " E5703_0_00_TEXT "\0" // None
 "\x01 " E5703_0_01_TEXT "\0" // 4 kW
-"\x02 " E5703_0_02_TEXT "\0" // 6 kW
-"\x03 " E5703_0_03_TEXT "\0" // 8.5 kW
-"\x04 " E5703_0_04_TEXT "\0" // 11 kW
-"\x05 " E5703_0_05_TEXT // 14 kW
+"\x02 " E5703_0_02_TEXT "\0" // 5 kW
+"\x03 " E5703_0_03_TEXT "\0" // 8 kW
+"\x04 " E5703_0_04_TEXT // 10 kW
 };
 
 // 5706 - Backup heater
 const char E5706_0[] = {
+"\x01 " E5706_0_01_TEXT "\0" // None
+"\x02 " E5706_0_02_TEXT "\0" // DHW Immersion Heater
+"\x03 " E5706_0_03_TEXT "\0" // Heat Only
+"\x04 " E5706_0_04_TEXT "\0" // Hybrid Combi
+"\x05 " E5706_0_05_TEXT // Hybrid Heat/System
 };
 
 // 5750 - Consumer circuit 1
@@ -1509,8 +1574,12 @@ const char E5806_0[] = {
 "\x05 " E5806_0_05_TEXT // 1-stage
 };
 
-// 5895 - 
+// 5895 - Backup heater QX5
 const char E5895_0[] = {
+"\x00 " E5895_0_00_TEXT "\0" // None
+"\x04 " E5895_0_04_TEXT "\0" // Flow immersion heater K25
+"\x0a " E5895_0_0a_TEXT "\0" // DHW immersion heater K6
+"\x1e " E5895_0_1e_TEXT // Boiler K27
 };
 
 // 5980 - Function input EX1
@@ -2097,7 +2166,8 @@ const char E6700_0[] = {
 "\x02\x17 " E6700_0_217_TEXT "\0" // 535:Special sensor 7
 "\x02\x18 " E6700_0_218_TEXT "\0" // 536:Special sensor 8
 "\x02\x19 " E6700_0_219_TEXT "\0" // 537:DHW circulation temperature not reached
-"\x02\x1a " E6700_0_21a_TEXT // 538:Heat exchanger sensor error
+"\x02\x1a " E6700_0_21a_TEXT "\0" // 538:Heat exchanger sensor error
+"\x02\x1b " E6700_0_21b_TEXT // 539:Fault supplementary source
 };
 
 #define E6701_0 E6700_0
@@ -2132,6 +2202,12 @@ const char E7202_0[] = {
 
 // 7700 - Relay test
 const char E7700_0[] = {
+"\x00 " E7700_0_00_TEXT "\0" // No test
+"\x01 " E7700_0_01_TEXT "\0" // Everything off
+"\x05 " E7700_0_05_TEXT "\0" // Three way valve
+"\x06 " E7700_0_06_TEXT "\0" // Backup Heater
+"\x0f " E7700_0_0f_TEXT "\0" // CH1 Pump
+"\x11 " E7700_0_11_TEXT "\0" // CH2 Pump
 };
 
 // 8006 - Status heat pump
@@ -2447,7 +2523,10 @@ const char E8006_0[] = {
 "\x01\x34 " E8006_0_134_TEXT "\0" // SHC 2 HP in operation
 "\x01\x35 " E8006_0_135_TEXT "\0" // Minimal flow function active
 "\x01\x36 " E8006_0_136_TEXT "\0" // Charging photovoltaic
-"\x01\x37 " E8006_0_137_TEXT // Charging lock photovoltaic
+"\x01\x37 " E8006_0_137_TEXT "\0" // Charging lock photovoltaic
+"\x01\x38 " E8006_0_138_TEXT "\0" // El charging, photovoltaic
+"\x01\x39 " E8006_0_139_TEXT "\0" // Heating photovoltaic
+"\x01\x3a " E8006_0_13a_TEXT // Cooling photovoltaic
 };
 
 // 8458 - Smart grid state
@@ -2460,6 +2539,8 @@ const char E8458_0[] = {
 
 // 8820 - State DHW pump
 const char E8820_0[] = {
+"\x00 " E8820_0_00_TEXT "\0" // CH
+"\x01 " E8820_0_01_TEXT // DHW
 };
 
 // 6708 - Error message heat pump
@@ -2490,7 +2571,16 @@ const char E6708_0[] = {
 "\x17 " E6708_0_17_TEXT "\0" // XY:Hydraulic HEX temperature
 "\x18 " E6708_0_18_TEXT "\0" // 9C:Water pump error
 "\x19 " E6708_0_19_TEXT "\0" // 79:ODUM Water temperature sensor error
-"\x1a " E6708_0_1a_TEXT // 7A:Flow meter error
+"\x1a " E6708_0_1a_TEXT "\0" // 7A:Flow meter error
+"\x1b " E6708_0_1b_TEXT "\0" // AE:Water flow error
+"\x1c " E6708_0_1c_TEXT "\0" // XY: Unknown 28
+"\x1d " E6708_0_1d_TEXT "\0" // XY: Unknown 29
+"\x1e " E6708_0_1e_TEXT "\0" // XY: Unknown 30
+"\x1f " E6708_0_1f_TEXT "\0" // XY: Unknown 31
+"\x20 " E6708_0_20_TEXT "\0" // XY: Unknown 32
+"\x21 " E6708_0_21_TEXT "\0" // XY: Unknown 33
+"\x22 " E6708_0_22_TEXT "\0" // XY: Unknown 34
+"\x23 " E6708_0_23_TEXT // XY: Unknown 35
 };
 
 #define E10028_0 E8006_0
@@ -2655,7 +2745,7 @@ const char S561_0[] = S561_0_TEXT;  // Domestic water cycle
 #define S501_0 S501_0                       // Heating cycle
 #define S521_0 S501_0                       // Heating cycle
 #define S541_0 S501_0                       // Heating cycle
-const char S700_0[] = S700_0_TEXT;  // 
+const char S700_0[] = S700_0_TEXT;  // Heating mode
 const char S710_0[] = S710_0_TEXT;  // Comfort setpoint 
 const char S712_0[] = S712_0_TEXT;  // Room temp reduced setpoint
 const char S714_0[] = S714_0_TEXT;  // Room temp protective setpoint cooling circuit 1
@@ -2672,7 +2762,7 @@ const char S850_0[] = S850_0_TEXT;  // Flooring plaster dry up function
 const char S851_0[] = S851_0_TEXT;  // Floor setpoint manually
 const char S856_0[] = S856_0_TEXT;  // Flooring plaster dry up day
 const char S857_0[] = S857_0_TEXT;  // Floor curing days fulfilled
-#define S1000_0 S700_0                       // 
+#define S1000_0 S700_0                       // Heating mode
 #define S1010_0 S710_0                       // Comfort setpoint 
 #define S1012_0 S712_0                       // Room temp reduced setpoint
 #define S1014_0 S714_0                       // Room temp protective setpoint cooling circuit 1
@@ -2689,7 +2779,7 @@ const char S857_0[] = S857_0_TEXT;  // Floor curing days fulfilled
 #define S1151_0 S851_0                       // Floor setpoint manually
 #define S1156_0 S856_0                       // Flooring plaster dry up day
 #define S1157_0 S857_0                       // Floor curing days fulfilled
-const char S1600_0[] = S1600_0_TEXT;  // 
+const char S1600_0[] = S1600_0_TEXT;  // DHW mode
 const char S1610_0[] = S1610_0_TEXT;  // DHW temperature nominal setpoint
 const char S1612_0[] = S1612_0_TEXT;  // DHW temperature reduced setpoint
 const char S1614_0[] = S1614_0_TEXT;  // DHW temperature nominal setpoint max
@@ -2738,7 +2828,7 @@ const char S3162_0[] = S3162_0_TEXT;  // Yearly perf factor 7
 const char S3169_0[] = S3169_0_TEXT;  // Yearly perf factor 8
 const char S3176_0[] = S3176_0_TEXT;  // Yearly perf factor 9
 const char S3183_0[] = S3183_0_TEXT;  // Yearly perf factor 10
-const char S3692_0[] = S3692_0_TEXT;  // 
+const char S3692_0[] = S3692_0_TEXT;  // DHW Heat Source
 const char S3694_0[] = S3694_0_TEXT;  // OT limit with DHW charging
 const char S3700_0[] = S3700_0_TEXT;  // Release oil-/gas boil below outside temp thresh
 #define S3701_0 S2910_0                       // Heat pump release above outside temperature
@@ -2758,7 +2848,7 @@ const char S5740_0[] = S5740_0_TEXT;  // Output el imm heater K6
 const char S5750_0[] = S5750_0_TEXT;  // Consumer circuit 1
 const char S5751_0[] = S5751_0_TEXT;  // Consumer circuit 2
 const char S5806_0[] = S5806_0_TEXT;  // Type electric flow
-const char S5895_0[] = S5895_0_TEXT;  // 
+const char S5895_0[] = S5895_0_TEXT;  // Backup heater QX5
 const char S5980_0[] = S5980_0_TEXT;  // Function input EX1
 const char S5981_0[] = S5981_0_TEXT;  // Operating action input EX1
 const char S5982_0[] = S5982_0_TEXT;  // Function input EX2
@@ -3000,7 +3090,7 @@ const cmd_t cmdtbl[]={
 {0x053D0AA5,  VT_TIMEPROG,        561.5, S_WD_6,   0,                  NULL,         DEFAULT_FLAG, 211, 213},
 {0x053D0AA6,  VT_TIMEPROG,        561.6, S_WD_7,   0,                  NULL,         DEFAULT_FLAG, 211, 213},
 {0x053D05B3,  VT_YESNO,           576,   S576_0,   sizeof(ENUM_YESNO), ENUM_YESNO,   DEFAULT_FLAG, 211, 213}, // Standard values TSP
-{0x2D3D0574,  VT_ENUM,            700,   S700_0,   sizeof(E700_0),     E700_0,       DEFAULT_FLAG, 211, 213}, // 
+{0x2D3D0574,  VT_ENUM,            700,   S700_0,   sizeof(E700_0),     E700_0,       DEFAULT_FLAG, 211, 213}, // Heating mode
 {0x2D3D0574,  VT_ENUM,            700,   S_BA_TEXT,sizeof(E_BA_HK),    E_BA_HK,      DEFAULT_FLAG, 255, 255}, // Operating mode
 {0x2D3D058E,  VT_TEMP,            710,   S710_0,   0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Comfort setpoint 
 {0x2D3D0590,  VT_TEMP,            712,   S712_0,   0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Room temp reduced setpoint
@@ -3022,7 +3112,7 @@ const cmd_t cmdtbl[]={
 {0x653D0A1A,  VT_TEMP,            902,   S902_0,   0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Room temp Comfort setpoint cooling circuit 1
 {0x653D0A1A,  VT_TEMP,            902.1, S902P1_0, 0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Room temp Comfort setpoint cooling circuit 1
 {0x653D0A1A,  VT_TEMP,            902.2, S902P2_0, 0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Room temp Comfort setpoint cooling circuit 1
-{0x2E3D0574,  VT_ENUM,            1000,  S1000_0,  sizeof(E1000_0),    E1000_0,      DEFAULT_FLAG, 211, 213}, // 
+{0x2E3D0574,  VT_ENUM,            1000,  S1000_0,  sizeof(E1000_0),    E1000_0,      DEFAULT_FLAG, 211, 213}, // Heating mode
 {0x2E3D0574,  VT_ENUM,            1000,  S_BA_TEXT,sizeof(E_BA_HK),    E_BA_HK,      DEFAULT_FLAG, 255, 255}, // Operating mode
 {0x2E3D058E,  VT_TEMP,            1010,  S1010_0,  0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Comfort setpoint 
 {0x2E3D0590,  VT_TEMP,            1012,  S1012_0,  0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Room temp reduced setpoint
@@ -3040,7 +3130,7 @@ const cmd_t cmdtbl[]={
 {0x2E3D068A,  VT_TEMP,            1151,  S1151_0,  0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Floor setpoint manually
 {0x2E3D0DF2,  VT_BYTE,            1156,  S1156_0,  0,                  NULL,         FL_RONLY,     211, 213}, // Flooring plaster dry up day
 {0x223D0B43,  VT_BYTE,            1157,  S1157_0,  0,                  NULL,         FL_RONLY,     211, 213}, // Floor curing days fulfilled
-{0x313D0571,  VT_ENUM,            1600,  S1600_0,  sizeof(E1600_0),    E1600_0,      DEFAULT_FLAG, 211, 213}, // 
+{0x313D0571,  VT_ENUM,            1600,  S1600_0,  sizeof(E1600_0),    E1600_0,      DEFAULT_FLAG, 211, 213}, // DHW mode
 {0x313D0571,  VT_ENUM,            1600,  S_BA_TEXT,sizeof(E_BA_TW),    E_BA_TW,      DEFAULT_FLAG, 255, 255}, // Operating mode
 {0x313D06B9,  VT_TEMP,            1610,  S1610_0,  0,                  NULL,         DEFAULT_FLAG, 211, 213}, // DHW temperature nominal setpoint
 {0x313D06BA,  VT_TEMP,            1612,  S1612_0,  0,                  NULL,         DEFAULT_FLAG, 211, 213}, // DHW temperature reduced setpoint
@@ -3090,7 +3180,7 @@ const cmd_t cmdtbl[]={
 {0x053D16BA,  VT_UINT100_WORD_N,  3169,  S3169_0,  0,                  NULL,         FL_OEM+FL_RONLY, 211, 213}, // Yearly perf factor 8
 {0x053D16BB,  VT_UINT100_WORD_N,  3176,  S3176_0,  0,                  NULL,         FL_OEM+FL_RONLY, 211, 213}, // Yearly perf factor 9
 {0x053D16BC,  VT_UINT100_WORD_N,  3183,  S3183_0,  0,                  NULL,         FL_OEM+FL_RONLY, 211, 213}, // Yearly perf factor 10
-{0x053D11D3,  VT_ENUM,            3692,  S3692_0,  sizeof(E3692_0),    E3692_0,      DEFAULT_FLAG, 211, 213}, // 
+{0x053D11D3,  VT_ENUM,            3692,  S3692_0,  sizeof(E3692_0),    E3692_0,      DEFAULT_FLAG, 211, 213}, // DHW Heat Source
 {0x053D0E66,  VT_ENUM,            3694,  S3694_0,  sizeof(E3694_0),    E3694_0,      DEFAULT_FLAG, 211, 213}, // OT limit with DHW charging
 {0x053D0B5C,  VT_TEMP_N,          3700,  S3700_0,  0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Release oil-/gas boil below outside temp thresh
 {0x053D0B5B,  VT_TEMP_N,          3701,  S3701_0,  0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Heat pump release above outside temperature
@@ -3108,7 +3198,7 @@ const cmd_t cmdtbl[]={
 {0x053D10D4,  VT_ENUM,            5750,  S5750_0,  sizeof(E5750_0),    E5750_0,      FL_OEM,       211, 213}, // Consumer circuit 1
 {0x053D10D5,  VT_ENUM,            5751,  S5751_0,  sizeof(E5751_0),    E5751_0,      FL_OEM,       211, 213}, // Consumer circuit 2
 {0x053D1119,  VT_ENUM,            5806,  S5806_0,  sizeof(E5806_0),    E5806_0,      DEFAULT_FLAG, 211, 213}, // Type electric flow
-{0x053D0589,  VT_ENUM,            5895,  S5895_0,  sizeof(E5895_0),    E5895_0,      FL_OEM,       211, 213}, // 
+{0x053D0589,  VT_ENUM,            5895,  S5895_0,  sizeof(E5895_0),    E5895_0,      FL_OEM,       211, 213}, // Backup heater QX5
 {0x053D09FD,  VT_ENUM,            5980,  S5980_0,  sizeof(E5980_0),    E5980_0,      DEFAULT_FLAG, 211, 213}, // Function input EX1
 {0x053D09FE,  VT_ENUM,            5981,  S5981_0,  sizeof(E5981_0),    E5981_0,      DEFAULT_FLAG, 211, 213}, // Operating action input EX1
 {0x053D07CE,  VT_ENUM,            5982,  S5982_0,  sizeof(E5982_0),    E5982_0,      DEFAULT_FLAG, 211, 213}, // Function input EX2
