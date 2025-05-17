@@ -3,7 +3,7 @@
 #define S501_0_TEXT "Heating cycle"
 #define S516_0_TEXT "Standard values TSP"
 #define S561_0_TEXT "Domestic water cycle"
-#define S700_0_TEXT ""
+#define S700_0_TEXT "Operating mode"
 #define S710_0_TEXT "Comfort setpoint "
 #define S712_0_TEXT "Room temp reduced setpoint"
 #define S714_0_TEXT "Room temp protective setpoint cooling circuit 1"
@@ -20,7 +20,7 @@
 #define S851_0_TEXT "Floor setpoint manually"
 #define S856_0_TEXT "Flooring plaster dry up day"
 #define S857_0_TEXT "Floor curing days fulfilled"
-#define S1600_0_TEXT ""
+#define S1600_0_TEXT "Operating mode"
 #define S1610_0_TEXT "DHW temperature nominal setpoint"
 #define S1612_0_TEXT "DHW temperature reduced setpoint"
 #define S1614_0_TEXT "DHW temperature nominal setpoint max"
@@ -60,6 +60,7 @@
 #define S3113_0_TEXT "Energy brought in heating"
 #define S3114_0_TEXT "Energy brought in DHW"
 #define S3116_0_TEXT "Performance factor"
+#define S3120_0_TEXT "Yearly perf factor 1"
 #define S3127_0_TEXT "Yearly perf factor 2"
 #define S3134_0_TEXT "Yearly perf factor 3"
 #define S3141_0_TEXT "Yearly perf factor 4"
@@ -183,7 +184,7 @@
 #define S8744_0_TEXT "Flow temp setpoint resulting HC1"
 #define S8770_0_TEXT "Room temperature actual value 2"
 #define S8774_0_TEXT "Flow temp setpoint resulting HC2"
-#define S8820_0_TEXT "State DHW pump"
+#define S8820_0_TEXT "Diverter valve position"
 #define S8821_0_TEXT "State electric immersion heater DHW"
 #define S8830_0_TEXT "DHW temperature actual value top (B3)"
 #define S8840_0_TEXT "Hours run DHW pump"
@@ -236,7 +237,7 @@
 #define E_CAT_16_D3_D5_TEXT "Diagnostics consumer"
 
 #define E700_0_00_TEXT "Protection"
-#define E700_0_01_TEXT "Automatic"
+#define E700_0_01_TEXT "Schedule"
 #define E700_0_02_TEXT "Reduced"
 #define E700_0_03_TEXT "Comfort"
 #define E850_0_00_TEXT "Off"
@@ -282,11 +283,20 @@
 #define E3694_0_01_TEXT "Note"
 #define E5072_0_00_TEXT "…"
 #define E5072_0_01_TEXT "Recharging"
+#define E5700_0_00_TEXT "1 Underfloor Circuit."
+#define E5700_0_01_TEXT "1 Radiator Circuit."
+#define E5700_0_02_TEXT "2 Radiator Circuits."
+#define E5700_0_03_TEXT "1 Radiator and 1 Underfloor Circuit."
+#define E5700_0_04_TEXT "2 Underfloor Circuits."
+#define E5700_0_05_TEXT "Heat Pump Slave"
 #define E5703_0_01_TEXT "4 kW"
-#define E5703_0_02_TEXT "6 kW"
-#define E5703_0_03_TEXT "8.5 kW"
-#define E5703_0_04_TEXT "11 kW"
-#define E5703_0_05_TEXT "14 kW"
+#define E5703_0_02_TEXT "5 kW"
+#define E5703_0_03_TEXT "8 kW"
+#define E5703_0_04_TEXT "10 kW"
+#define E5706_0_02_TEXT "DHW Immersion Heater"
+#define E5706_0_03_TEXT "Heat Only"
+#define E5706_0_04_TEXT "Hybrid Combi"
+#define E5706_0_05_TEXT "Hybrid Heat/System"
 #define E5750_0_01_TEXT "Heating"
 #define E5750_0_02_TEXT "4-pipe system cooling"
 #define E5750_0_03_TEXT "2-pipe system cooling"
@@ -1181,6 +1191,8 @@
 #define E8458_0_02_TEXT "Draw free"
 #define E8458_0_03_TEXT "Draw wished"
 #define E8458_0_04_TEXT "Draw forced"
+#define E8820_0_00_TEXT "CH"
+#define E8820_0_01_TEXT "DHW"
 #define E6708_0_00_TEXT "11:Serial communication error"
 #define E6708_0_02_TEXT "42:Hydraulic unit heat-exchange thermistor error"
 #define E6708_0_03_TEXT "63:Inverter error"
@@ -1357,10 +1369,10 @@ const char ENUM_CAT[] = {
 "\x1A " ENUM_CAT_45_TEXT 
 };
 
-// 700 - 
+// 700 - Operating mode
 const char E700_0[] = {
 "\x00 " E700_0_00_TEXT "\0" // Protection
-"\x01 " E700_0_01_TEXT "\0" // Automatic
+"\x01 " E700_0_01_TEXT "\0" // Schedule
 "\x02 " E700_0_02_TEXT "\0" // Reduced
 "\x03 " E700_0_03_TEXT // Comfort
 };
@@ -1474,20 +1486,29 @@ const char E5072_0[] = {
 
 // 5700 - Heating Circuits N° & Type
 const char E5700_0[] = {
+"\x00 " E5700_0_00_TEXT "\0" // 1 Underfloor Circuit.
+"\x01 " E5700_0_01_TEXT "\0" // 1 Radiator Circuit.
+"\x02 " E5700_0_02_TEXT "\0" // 2 Radiator Circuits.
+"\x03 " E5700_0_03_TEXT "\0" // 1 Radiator and 1 Underfloor Circuit.
+"\x04 " E5700_0_04_TEXT "\0" // 2 Underfloor Circuits.
+"\x05 " E5700_0_05_TEXT // Heat Pump Slave
 };
 
 // 5703 - Outdoor Unit Power Rating
 const char E5703_0[] = {
 "\x00 " E5703_0_00_TEXT "\0" // None
 "\x01 " E5703_0_01_TEXT "\0" // 4 kW
-"\x02 " E5703_0_02_TEXT "\0" // 6 kW
-"\x03 " E5703_0_03_TEXT "\0" // 8.5 kW
-"\x04 " E5703_0_04_TEXT "\0" // 11 kW
-"\x05 " E5703_0_05_TEXT // 14 kW
+"\x02 " E5703_0_02_TEXT "\0" // 5 kW
+"\x03 " E5703_0_03_TEXT "\0" // 8 kW
+"\x04 " E5703_0_04_TEXT // 10 kW
 };
 
 // 5706 - Backup heater
 const char E5706_0[] = {
+"\x02 " E5706_0_02_TEXT "\0" // DHW Immersion Heater"
+"\x03 " E5706_0_03_TEXT "\0" // Heat Only"
+"\x04 " E5706_0_04_TEXT "\0" // Hybrid Combi"
+"\x05 " E5706_0_05_TEXT // Hybrid Heat/System"
 };
 
 // 5750 - Consumer circuit 1
@@ -2458,8 +2479,10 @@ const char E8458_0[] = {
 "\x04 " E8458_0_04_TEXT // Draw forced
 };
 
-// 8820 - State DHW pump
+// 8820 - Diverter valve position
 const char E8820_0[] = {
+"\x00 " E8820_0_00_TEXT "\0" // Central Heating
+"\x01 " E8820_0_01_TEXT      // Domestic Hot Water
 };
 
 // 6708 - Error message heat pump
@@ -2545,7 +2568,7 @@ const char E10026P0_0[] = {
 
 const char E_BA_HK[] = {
 "\x00 Protection" "\0"
-"\x01 Automatic" "\0"
+"\x01 Schedule" "\0"
 "\x02 Reduced" "\0"
 "\x03 Comfort"
 };
@@ -2689,7 +2712,7 @@ const char S857_0[] = S857_0_TEXT;  // Floor curing days fulfilled
 #define S1151_0 S851_0                       // Floor setpoint manually
 #define S1156_0 S856_0                       // Flooring plaster dry up day
 #define S1157_0 S857_0                       // Floor curing days fulfilled
-const char S1600_0[] = S1600_0_TEXT;  // 
+const char S1600_0[] = S1600_0_TEXT;  // DHW Operating mode
 const char S1610_0[] = S1610_0_TEXT;  // DHW temperature nominal setpoint
 const char S1612_0[] = S1612_0_TEXT;  // DHW temperature reduced setpoint
 const char S1614_0[] = S1614_0_TEXT;  // DHW temperature nominal setpoint max
@@ -2729,6 +2752,7 @@ const char S3111_0[] = S3111_0_TEXT;  // Heat delivered DHW
 const char S3113_0[] = S3113_0_TEXT;  // Energy brought in heating
 const char S3114_0[] = S3114_0_TEXT;  // Energy brought in DHW
 const char S3116_0[] = S3116_0_TEXT;  // Performance factor
+const char S3120_0[] = S3120_0_TEXT;  // Yearly perf factor 1
 const char S3127_0[] = S3127_0_TEXT;  // Yearly perf factor 2
 const char S3134_0[] = S3134_0_TEXT;  // Yearly perf factor 3
 const char S3141_0[] = S3141_0_TEXT;  // Yearly perf factor 4
@@ -3000,7 +3024,7 @@ const cmd_t cmdtbl[]={
 {0x053D0AA5,  VT_TIMEPROG,        561.5, S_WD_6,   0,                  NULL,         DEFAULT_FLAG, 211, 213},
 {0x053D0AA6,  VT_TIMEPROG,        561.6, S_WD_7,   0,                  NULL,         DEFAULT_FLAG, 211, 213},
 {0x053D05B3,  VT_YESNO,           576,   S576_0,   sizeof(ENUM_YESNO), ENUM_YESNO,   DEFAULT_FLAG, 211, 213}, // Standard values TSP
-{0x2D3D0574,  VT_ENUM,            700,   S700_0,   sizeof(E700_0),     E700_0,       DEFAULT_FLAG, 211, 213}, // 
+{0x2D3D0574,  VT_ENUM,            700,   S700_0,   sizeof(E700_0),     E700_0,       DEFAULT_FLAG, 211, 213}, // Operating mode
 {0x2D3D0574,  VT_ENUM,            700,   S_BA_TEXT,sizeof(E_BA_HK),    E_BA_HK,      DEFAULT_FLAG, 255, 255}, // Operating mode
 {0x2D3D058E,  VT_TEMP,            710,   S710_0,   0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Comfort setpoint 
 {0x2D3D0590,  VT_TEMP,            712,   S712_0,   0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Room temp reduced setpoint
@@ -3022,7 +3046,7 @@ const cmd_t cmdtbl[]={
 {0x653D0A1A,  VT_TEMP,            902,   S902_0,   0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Room temp Comfort setpoint cooling circuit 1
 {0x653D0A1A,  VT_TEMP,            902.1, S902P1_0, 0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Room temp Comfort setpoint cooling circuit 1
 {0x653D0A1A,  VT_TEMP,            902.2, S902P2_0, 0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Room temp Comfort setpoint cooling circuit 1
-{0x2E3D0574,  VT_ENUM,            1000,  S1000_0,  sizeof(E1000_0),    E1000_0,      DEFAULT_FLAG, 211, 213}, // 
+{0x2E3D0574,  VT_ENUM,            1000,  S1000_0,  sizeof(E1000_0),    E1000_0,      DEFAULT_FLAG, 211, 213}, // Operating mode
 {0x2E3D0574,  VT_ENUM,            1000,  S_BA_TEXT,sizeof(E_BA_HK),    E_BA_HK,      DEFAULT_FLAG, 255, 255}, // Operating mode
 {0x2E3D058E,  VT_TEMP,            1010,  S1010_0,  0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Comfort setpoint 
 {0x2E3D0590,  VT_TEMP,            1012,  S1012_0,  0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Room temp reduced setpoint
@@ -3040,7 +3064,7 @@ const cmd_t cmdtbl[]={
 {0x2E3D068A,  VT_TEMP,            1151,  S1151_0,  0,                  NULL,         DEFAULT_FLAG, 211, 213}, // Floor setpoint manually
 {0x2E3D0DF2,  VT_BYTE,            1156,  S1156_0,  0,                  NULL,         FL_RONLY,     211, 213}, // Flooring plaster dry up day
 {0x223D0B43,  VT_BYTE,            1157,  S1157_0,  0,                  NULL,         FL_RONLY,     211, 213}, // Floor curing days fulfilled
-{0x313D0571,  VT_ENUM,            1600,  S1600_0,  sizeof(E1600_0),    E1600_0,      DEFAULT_FLAG, 211, 213}, // 
+{0x313D0571,  VT_ENUM,            1600,  S1600_0,  sizeof(E1600_0),    E1600_0,      DEFAULT_FLAG, 211, 213}, // Operating mode
 {0x313D0571,  VT_ENUM,            1600,  S_BA_TEXT,sizeof(E_BA_TW),    E_BA_TW,      DEFAULT_FLAG, 255, 255}, // Operating mode
 {0x313D06B9,  VT_TEMP,            1610,  S1610_0,  0,                  NULL,         DEFAULT_FLAG, 211, 213}, // DHW temperature nominal setpoint
 {0x313D06BA,  VT_TEMP,            1612,  S1612_0,  0,                  NULL,         DEFAULT_FLAG, 211, 213}, // DHW temperature reduced setpoint
