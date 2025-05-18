@@ -25,8 +25,13 @@ typedef enum {
     EVERBLU_DATA_COUNT
 } everblu_data_t;
 
-typedef struct {
+#define EVERBLU_CONFIG_VERSION 0x01
+
+typedef struct __attribute__((packed)) {
     uint8_t cfgInit; // Magic number to ensure config is initialised.
+    uint8_t cfgSize; // sizeof(everblu_config_t). Will zero bytes from cfgSize to end if different (e.g. config was expanded)
+    uint8_t cfgVer;  // Config version
+    uint8_t enable;
     float frequency; // Frequency of meter found during scanning
     int lastLitres;
     int lastReadCount;
