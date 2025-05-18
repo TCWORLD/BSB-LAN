@@ -20,8 +20,24 @@ struct tmeter_data {
 
 void setMHZ(float mhz);
 void setFREQxRegister(uint32_t freqx) ;
+
+
+// Initialise CC1101
+//  - If freq > 0, sets frequency to specified value in MHz
+//  - If freq == 0, sets frequency using direct freqx register value
+//  - If freq < 0, skips configuring RF. Allows for simply hardware presence check
 bool cc1101_init(float freq, uint32_t freqx = 0, bool show = false);
+
+// Configure CC1100 RF interface
+//  - Use this if configuring was skipped during cc1101_init
+//  - If freq == 0, sets frequency using direct freqx register value
+//  - Else sets frequency to specified value in MHz
+void cc1101_configureRF_0(float freq, uint32_t freqx);
+
+// De-initialise CC1101 SPI
 void cc1101_sleep() ;
+
+// Scan meter data
 struct tmeter_data get_meter_data(void);
 
 extern int _spi_speed;
