@@ -5,8 +5,9 @@
 // Meter-specific configuration
 #define METER_YEAR 13        // Last two digits of the year printed on the meter (e.g., 2019 is 19)
 #define METER_SERIAL 535395  // Meter Serial Number (omit leading zero)
-#define GDO0 35              // Pin used for GDO0 (General Digital Output 0)
 #define FREQUENCY 433.76f    // Frequency of the meter (default. Can be discovered via test code)
+#define GDO0 33              // Pin used for GDO0 (General Digital Output 0)
+#define GDO2 35              // Pin used for GDO2 (General Digital Output 2)
 
 #define CC1101_FREQUENCY_MIN 433.0f // Minimum allowed frequency for CC1101 variant
 #define CC1101_FREQUENCY_MAX 434.0f // Maximum allowed frequency for CC1101 variant

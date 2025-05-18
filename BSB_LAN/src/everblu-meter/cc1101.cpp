@@ -306,7 +306,7 @@ void cc1101_configureRF_0(float freq, uint32_t freqx)
   //
   // Rf settings for CC1101
   //
-  halRfWriteReg(IOCFG2, 0x0D);  //GDO2 Output Pin Configuration : Serial Data Output
+  halRfWriteReg(IOCFG2, 0x2E);  //GDO2 Output Pin Configuration : Unused. HiZ
   halRfWriteReg(IOCFG0, 0x06);  //GDO0 Output Pin Configuration : Asserts when sync word has been sent / received, and de-asserts at the end of the packet.
   halRfWriteReg(FIFOTHR, 0x47); //0x4? adc with bandwith< 325khz
   halRfWriteReg(SYNC1, 0x55);   //01010101
