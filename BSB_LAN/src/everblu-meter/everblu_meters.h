@@ -33,6 +33,15 @@ typedef struct {
     int lastBatteryLeft;
 } everblu_config_t;
 
+// Function to scan for the correct frequency in the 433 MHz range
+//  - Non-blocking. Will perform one frequency check per call
+//  - set restart to true to restart scanning from first frequency. 
+//       - Will not perform scan, just resets counters.
+//  - returns -1.0f if all frequencies scanned but nothing found
+//  - returns -fCheck, indicating next frequency to be scanned
+//  - returns +ve frequency if valid frequency is found.
+float everblu_scanFrequency433MHz(bool restart);
+
 // Pass in a pointer to a RAM buffer which will be used to store config data
 //  - cfg must point to memory which is at least sizeof(everblu_config_t) bytes long
 void everblu_setConfig(everblu_config_t* cfg);
@@ -45,6 +54,11 @@ void everblu_setConfig(everblu_config_t* cfg);
 //  - if non-null, will populate meter_data with last known values. Array
 //    must be EVERBLU_DATA_COUNT elements long.
 bool everblu_initialise(long* meter_data);
+
+// Set selected frequency for meter
+//  - Returns false if invalid.
+//  - Set a frequency of -1.0f to retrigger autodetection.
+bool everblu_setFrequency(float frequency);
 
 // Check selected frequency for meter
 float everblu_getFrequency();

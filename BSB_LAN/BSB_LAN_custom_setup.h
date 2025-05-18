@@ -12,4 +12,4 @@ has_everblu = everblu_initialise(custom_longs);
 // Save the frequency to MQTT line
 if (has_everblu) custom_floats[0] = everblu_getFrequency();
 else custom_floats[0] = -1.0f;
-
+custom_floats[1] = 0.0f;

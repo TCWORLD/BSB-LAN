@@ -296,6 +296,10 @@ void setFREQxRegister(uint32_t freg)
   halRfWriteReg(FREQ0, freq0);
 }
 
+// Configure CC1100 RF interface
+//  - Use this if configuring was skipped during cc1101_init
+//  - If freq == 0, sets frequency using direct freqx register value
+//  - Else sets frequency to specified value in MHz
 void cc1101_configureRF_0(float freq, uint32_t freqx)
 {
   RF_config_u8 = 0;
@@ -358,6 +362,10 @@ void cc1101_configureRF_0(float freq, uint32_t freqx)
   SPIWriteBurstReg(PATABLE_ADDR, PA, 8);
 }
 
+// Initialise CC1101
+//  - If freq > 0, sets frequency to specified value in MHz
+//  - If freq == 0, sets frequency using direct freqx register value
+//  - If freq < 0, skips configuring RF. Allows for simply hardware presence check
 bool cc1101_init(float freq, uint32_t freqx, bool show)
 {
   bool ret = false;
@@ -375,7 +383,10 @@ bool cc1101_init(float freq, uint32_t freqx, bool show)
   delay(1);
   //show_cc1101_registers_settings();
   //delay(1);
-  cc1101_configureRF_0(freq, freqx); 
+  if (freq >= 0.0f) {
+    // Configure frequency if requested
+    cc1101_configureRF_0(freq, freqx); 
+  }
   return ret;
 }
 
