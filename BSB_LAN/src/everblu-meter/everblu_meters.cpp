@@ -111,10 +111,22 @@ bool everblu_initialise(long *meter_data) {
     if (!config)
         return false;
     // Check if initialised, and if not initialise it.
-    if (config->cfgInit != 0xEB) {
+    if (config->cfgInit != 0xEB || !config->cfgVer || !config->cfgSize) {
         memset(config, 0, sizeof(*config));
-        config->frequency = -1.0f;
-        config->cfgInit = 0xEB;
+        config->enable = 1; // Default to enabled
+        config->frequency = -1.0f; // With no known frequency
+        config->cfgSize = sizeof(*config);
+        config->cfgVer = EVERBLU_CONFIG_VERSION;
+        config->cfgInit = 0xEB; // Set magic word to mark as initialised
+    }
+    // If config has grown, zero out new space
+    if (config->cfgSize < sizeof(*config)) {
+        memset(((uint8_t*)config) + config->cfgSize, 0, sizeof(*config) - config->cfgSize);
+    }
+    // If size has changed update size and version fields.
+    if ((config->cfgSize != sizeof(*config)) || (config->cfgVer != EVERBLU_CONFIG_VERSION)) {
+        config->cfgVer = EVERBLU_CONFIG_VERSION;
+        config->cfgSize = sizeof(*config);
     }
     // Populate meter data with last known values if requested
     if (meter_data) {
@@ -131,7 +143,7 @@ bool everblu_initialise(long *meter_data) {
     // Restart scanner counters without performing scan
     everblu_scanFrequency433MHz(true);
     cc1101_sleep();
-    return hasRf;
+    return hasRf && config->enable;
 }
 
 bool everblu_readMeter(long *meter_data) {
