@@ -190,6 +190,7 @@ UIStrings["CF_RX_PIN_TEXT"] = "RX Pin Nummer";
 UIStrings["CF_TX_PIN_TEXT"] = "TX Pin Nummer";
 UIStrings["CF_CONFIG_LEVEL_TEXT"] = "Erweiterte Einstellungen anzeigen";
 UIStrings["CF_ENERGY_SAVE_TEXT"] = "Energiesparmodus";
+UIStrings["CF_CUSTOM_EEPROM_TEXT"] = "Benutzerdefinierter EEPROM-Bereich";
 
 UIStrings["CAT_GENERAL_TEXT"] = "Generell";
 UIStrings["CAT_IPV4_TEXT"] = "Netzwerk";

@@ -190,6 +190,7 @@
 #define CF_TX_PIN_TEXT "TX Pin Nummer"
 #define CF_CONFIG_LEVEL_TEXT "Erweiterte Einstellungen anzeigen"
 #define CF_ENERGY_SAVE_TEXT "Energiesparmodus"
+#define CF_CUSTOM_EEPROM_TEXT "Benutzerdefinierter EEPROM-Bereich"
 
 #define CAT_GENERAL_TEXT "Generell"
 #define CAT_IPV4_TEXT "Netzwerk"

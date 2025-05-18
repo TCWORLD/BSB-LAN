@@ -117,7 +117,8 @@ typedef enum {
   CDT_IPV4, //CPI_TEXT field with format for IPv4 input/output
   CDT_PROGNRLIST, //CPI_TEXT field with format for programs list input/output
   CDT_MAXDEVICELIST,//CPI_TEXT field with format for MAX! devices list input/output
-  CDT_DHTBUS //CPI_TEXT field with format for DHT bus
+  CDT_DHTBUS, //CPI_TEXT field with format for DHT bus
+  CDT_BYTELIST //CPI_TEXT field containing comma separated list of bytes
 } cdt_params;
 
 //according to category in configuration_struct
@@ -239,7 +240,7 @@ const configuration_struct config[]={
   {CF_VERBOSE,          3, CCAT_DEBUG,    CPI_DROPDOWN,  CDT_BYTE,           OPT_FL_ADVANCED, CF_VERBOSE_TXT, sizeof(verbose)},
   {CF_SHOW_UNKNOWN,     7, CCAT_DEBUG,    CPI_SWITCH,    CDT_BYTE,           OPT_FL_ADVANCED, CF_SHOW_UNKNOWN_TXT, sizeof(show_unknown)},//immediately apply
   {CF_DUMMY,           14, CCAT_DEBUG,    CPI_NOTHING,   CDT_VOID,           OPT_FL_BASIC|OPT_FL_ADVANCED, CF_SHOW_UNKNOWN_TXT, sizeof(byte)},// dummy variable for forcing new EEPROM schema version
-  {CF_CUSTOM_EEPROM,   15, CCAT_GENERAL,  CPI_NOTHING,   CDT_VOID,           OPT_FL_BASIC|OPT_FL_ADVANCED, NULL, sizeof(custom_eeprom)},//immediately apply
+  {CF_CUSTOM_EEPROM,   15, CCAT_GENERAL,  CPI_TEXT,      CDT_BYTELIST,       OPT_FL_ADVANCED, CF_CUSTOM_EEPROM_TXT, sizeof(custom_eeprom)},//immediately apply
 };
 
 typedef struct{
