@@ -13,13 +13,13 @@
 //  - returns -fCheck, indicating next frequency to be scanned
 //  - returns +ve frequency if valid frequency is found.
 float everblu_scanFrequency433MHz(bool restart) {
-    printToDebug("###### FREQUENCY DISCOVERY ENABLED (433 MHz) ######\nStarting Frequency Scan...\n");
     static float fStart = -1.0f;
     static float fEnd = -1.0f;
     static float fCheck = 433.76f;
     static bool scanDone = false;
     if (restart) {
         // Restart scan counters
+        printToDebug("###### FREQUENCY DISCOVERY ENABLED (433 MHz) ######\nReady to run new sweep.\n");
         fStart = -1.0f;
         fEnd = -1.0f;
         fCheck = 433.76f;
@@ -27,8 +27,10 @@ float everblu_scanFrequency433MHz(bool restart) {
         return -fCheck;
     } else if (scanDone) {
         // Skip if no scan running
+        printToDebug("\n------------------------------\nNo frequency sweep running. Skipping.\n------------------------------\n");
         return -1.0f;
     }
+    printFmtToDebug("\n------------------------------\nStarting next frequency sweep step at: %f.\n------------------------------\n", fCheck);
     
     // Check if still within check range
     if (fCheck < 433.890f) {
@@ -70,7 +72,7 @@ float everblu_scanFrequency433MHz(bool restart) {
         return fMid;
     } else {
         // Otherwise log failure
-        printToDebug("\n------------------------------\nFailed to find meter in scan range.\n------------------------------\n");
+        printToDebug("\n------------------------------\nFailed to find meter in scan sweep range.\nAre you in range and in business hours?\n------------------------------\n");
         return -1.0f;
     }
 }
@@ -152,7 +154,7 @@ bool everblu_readMeter(long *meter_data) {
     printFmtToDebug("Read counter  : %d times\n", meter_read.reads_counter);
     printFmtToDebug("Working hours : from %02dH to %02d\n", meter_read.time_start, meter_read.time_end);
     printFmtToDebug("Frequency     : %0.4f\n", meter_read.frequency);
-    printFmtToDebug("RSSI  /  LQI  : %ddBm  /  %d\n", meter_read.rssi, meter_read.lqi);
+    printFmtToDebug("RSSI/CRC/LQI  : %ddBm / %s / %d\n", meter_read.rssi, meter_read.crcok ? "OK" : "FAIL", meter_read.lqi);
     
     // Update last known values
     config->lastLitres = meter_read.liters;

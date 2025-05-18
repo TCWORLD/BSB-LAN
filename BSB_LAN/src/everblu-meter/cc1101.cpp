@@ -29,7 +29,7 @@ uint8_t CC1101_status_state = 0;
 uint8_t CC1101_status_FIFO_FreeByte = 0;
 uint8_t CC1101_status_FIFO_ReadByte = 0;
 int8_t  CC1101_rssi;
-int8_t  CC1101_lqi;
+uint8_t CC1101_lqi;
 
 #define TX_LOOP_OUT 300
 /*---------------------------[CC1100 - R/W offsets]------------------------------*/
@@ -484,12 +484,13 @@ uint8_t is_look_like_radian_frame(uint8_t* buffer, size_t len)
 uint8_t cc1101_check_packet_received(void)
 {
   uint8_t rxBuffer[100];
-  uint8_t l_nb_byte, l_freq_est, pktLen;
+  uint8_t l_nb_byte, pktLen;
+  int8_t l_freq_est;
   pktLen = 0;
   if (digitalRead(GDO0)) {
     // get RF info at beginning of the frame
     CC1101_lqi = halRfReadReg(LQI_ADDR);
-    l_freq_est = halRfReadReg(FREQEST_ADDR);
+    l_freq_est = (int8_t)halRfReadReg(FREQEST_ADDR);
     CC1101_rssi = cc1100_rssi_convert2dbm(halRfReadReg(RSSI_ADDR));
 
     while (digitalRead(GDO0)) {
@@ -503,7 +504,8 @@ uint8_t cc1101_check_packet_received(void)
     if (is_look_like_radian_frame(rxBuffer, pktLen)) {
       echo_debug(debug_out, "\n");
       print_time();
-      echo_debug(debug_out, " bytes=%u rssi=%u lqi=%u F_est=%u ", pktLen, CC1101_rssi, CC1101_lqi, l_freq_est);
+      uint8_t crcOk = (CC1101_lqi & 0x80) ? 1 : 0;
+      echo_debug(debug_out, " bytes=%u rssi=%u lqi=%u cok=%u F_est=%d ", pktLen, CC1101_rssi, CC1101_lqi & 0x7F, crcOk, l_freq_est);
       show_in_hex_one_line(rxBuffer, pktLen);
       //show_in_bin(rxBuffer,l_nb_byte);       
     } else {
@@ -538,7 +540,8 @@ struct tmeter_data parse_meter_report(uint8_t *decoded_buffer, uint8_t size)
     // Fill signal values received in data incoming
     data.rssi = CC1101_rssi;
     data.rssi_dbm = cc1100_rssi_convert2dbm(CC1101_rssi);  // convert to dBm
-    data.lqi = CC1101_lqi;
+    data.lqi = CC1101_lqi & 0x7F;
+    data.crcok = (CC1101_lqi & 0x80) ? 1 : 0;
     //echo_debug(debug_out, "\n%u/%u/20%u %u:%u:%u ",decoded_buffer[24],decoded_buffer[25],decoded_buffer[26],decoded_buffer[28],decoded_buffer[29],decoded_buffer[30]);
     //echo_debug(debug_out, "%u litres ",decoded_buffer[18]+decoded_buffer[19]*256 + decoded_buffer[20]*65536 + decoded_buffer[21]*16777216);
     data.liters = decoded_buffer[18] + decoded_buffer[19] * 256 + decoded_buffer[20] * 65536 + decoded_buffer[21] * 16777216;
@@ -626,7 +629,7 @@ int receive_radian_frame(int size_byte, int rx_tmo_ms, uint8_t*rxBuffer, int rxB
   uint16_t l_total_byte = 0;
   uint16_t l_radian_frame_size_byte = ((size_byte * (8 + 3)) / 8) + 1;
   int l_tmo = 0;
-  uint8_t  l_freq_est;
+  int8_t  l_freq_est;
 
   if (debug_out) {
     echo_debug(debug_out, "\nsize_byte=%d  l_radian_frame_size_byte=%d\n", size_byte, l_radian_frame_size_byte);
@@ -681,10 +684,10 @@ int receive_radian_frame(int size_byte, int rx_tmo_ms, uint8_t*rxBuffer, int rxB
   CC1101_rssi = cc1100_rssi_convert2dbm(halRfReadReg(RSSI_ADDR));
   
   if (debug_out) {
-    echo_debug(debug_out, " bytes=%u rssi=%d lqi=%d F_est=%u ",l_byte_in_rx,CC1101_rssi,CC1101_lqi,l_freq_est);
+    uint8_t crcOk = (CC1101_lqi & 0x80) ? 1 : 0;
+    echo_debug(debug_out, " bytes=%u rssi=%d lqi=%u cok=%u F_est=%d ", l_byte_in_rx, CC1101_rssi, CC1101_lqi & 0x7F, crcOk, l_freq_est);
   }
 
-  fflush(stdout);
   halRfWriteReg(SYNC1, 0xFF);   //11111111
   halRfWriteReg(SYNC0, 0xF0);   //11110000 la fin du synch pattern et le bit de start
   halRfWriteReg(MDMCFG4, 0xF8); //Modem Configuration   RX filter BW = 58Khz
@@ -724,6 +727,7 @@ int receive_radian_frame(int size_byte, int rx_tmo_ms, uint8_t*rxBuffer, int rxB
   if (l_tmo < rx_tmo_ms && l_total_byte > 0) {
     echo_debug(debug_out, "frame received (%d)\n", l_total_byte);
   } else {
+    echo_debug(debug_out, "framing error (%d, %d)\n", l_total_byte, l_tmo);
     return 0;
   }
 

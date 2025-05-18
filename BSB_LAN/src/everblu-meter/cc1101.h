@@ -11,7 +11,8 @@ struct tmeter_data {
   int time_end; // like 18 (6pm, but in 24 hour format)
   int rssi; // Radio signal strength indicator
   int rssi_dbm; // RSSI in dBm
-  int lqi; // Link quality indicator 0-255
+  int lqi; // Link quality indicator 0-127
+  int crcok; // Whether CRC matched
 	int error; // 0:No data 1:OK  -1:wrong data
   float frequency;
 };
