@@ -163,6 +163,7 @@
   "CF_MQTT_DEVICE_TEXT": "Device ID",
   "CF_MQTT_UNITS_TEXT": "Units",
   "CF_CHECKUPDATE_TEXT": "Check for updates",
+  "CF_CUSTOM_EEPROM_TEXT": "Custom EEPROM region",
   "1_SENSOR_TEXT": "RU1 temperature sensor parameter",
   "CAT_GENERAL_TEXT": "General",
   "CAT_IPV4_TEXT": "Network",

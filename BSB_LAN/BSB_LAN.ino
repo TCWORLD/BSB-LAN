@@ -446,7 +446,7 @@ unsigned long custom_timer = millis();
 unsigned long custom_timer_compare = 0;
 float custom_floats[20] = { 0 };
 long custom_longs[20] = { 0 };
-long custom_eeprom[20] = { 0 }; 
+byte custom_eeprom[64] = { 0 }; 
 
 static const int numLogValues = sizeof(log_parameters) / sizeof(log_parameters[0]);
 static const int numCustomFloats = sizeof(custom_floats) / sizeof(custom_floats[0]);
@@ -2059,6 +2059,21 @@ uint8_t takeNewConfigValueFromUI_andWriteToRAM(int option_id, char *buf) {
       // writeToConfigVariable(option_id, variable); not needed here
       UpdateMaxDeviceList();
       break;}
+    case CDT_BYTELIST:{
+      uint16_t j = 0;
+      char *ptr = buf;
+      byte *variable = getConfigVariableAddress(option_id);
+      memset(variable, 0, cfg.size);
+      if (*ptr == '\0') break;
+      do{
+        char *ptr_t = ptr;
+        ptr = strchr(ptr, ',');
+        if (ptr) ptr[0] = 0;
+        variable[j] = (byte)strtoul(ptr_t, NULL, 0);
+        if (ptr) {ptr[0] = ','; ptr++;}
+        j++;
+      }while (ptr && j < cfg.size/sizeof(byte));
+      break;}
     default: break;
   }
 
@@ -2248,6 +2263,15 @@ void printMAXlistToWebClient(byte *variable, uint16_t size) {
   }
 }
 
+void printBytelistToWebClient(byte* variable, uint16_t size) {
+  bool isFirst = true;
+  for (uint16_t j = 0; j < size; j++) {
+    if (!isFirst) printToWebClient(",");
+    isFirst = false;
+    printFmtToWebClient("0x%02X", variable[j]);
+  }
+}
+
 void applyingConfig() {
   bool k_flag = false;
   int i = 0;
@@ -2364,6 +2388,9 @@ void generateWebConfigPage(bool printOnly) {
           case CDT_PROGNRLIST:
             printToWebClient("pattern='((^|,)\\d{1,5}(\\.\\d)?((!|!-)\\d{1,3})?)+'");
             break;
+          case CDT_BYTELIST:
+            printToWebClient("pattern='((^|,)(\\d{1,3}|0x[0-9A-Fa-f]{1,2}))+'");
+            break;
           }
         printToWebClient(" value='");
         break;
@@ -2458,6 +2485,9 @@ void generateWebConfigPage(bool printOnly) {
         break;
       case CDT_MAXDEVICELIST:
         printMAXlistToWebClient((byte *)variable, cfg.size);
+        break;
+      case CDT_BYTELIST:
+        printBytelistToWebClient((byte *)variable, cfg.size);
         break;
       default: break;
     }
@@ -2595,6 +2625,10 @@ void generateJSONwithConfig() {
         break;
       case CDT_MAXDEVICELIST:
         printMAXlistToWebClient((byte *)variable, cfg.size);
+        printToWebClient("\"");
+        break;
+      case CDT_BYTELIST:
+        printBytelistToWebClient((byte *)variable, cfg.size);
         printToWebClient("\"");
         break;
       default: break;

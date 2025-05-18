@@ -209,6 +209,7 @@ UIStrings["CF_CHECKUPDATE_TEXT"] = "Check for updates";
 UIStrings["CF_SHOW_UNKNOWN_TEXT"] = "Display unknown parameters";
 UIStrings["CF_ENERGY_SAVE_TEXT"] = "Energy saving";
 UIStrings["CF_LOG_DEST_TEXT"] = "Storage device";
+UIStrings["CF_CUSTOM_EEPROM_TEXT"] = "Custom EEPROM region";
 
 UIStrings["ENUM_LOG_DEST_00_TEXT"] = "SD card";
 UIStrings["ENUM_LOG_DEST_01_TEXT"] = "Internal flash storage";

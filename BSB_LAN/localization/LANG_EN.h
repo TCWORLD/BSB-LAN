@@ -209,6 +209,7 @@
 #define CF_SHOW_UNKNOWN_TEXT "Display unknown parameters"
 #define CF_ENERGY_SAVE_TEXT "Energy saving"
 #define CF_LOG_DEST_TEXT "Storage device"
+#define CF_CUSTOM_EEPROM_TEXT "Custom EEPROM region"
 
 #define ENUM_LOG_DEST_00_TEXT "SD card"
 #define ENUM_LOG_DEST_01_TEXT "Internal flash storage"

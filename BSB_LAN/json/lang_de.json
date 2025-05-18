@@ -199,6 +199,7 @@
   "CF_MQTT_DEVICE_TEXT": "Geräte ID",
   "CF_MQTT_UNITS_TEXT": "Einheiten",
   "CF_CHECKUPDATE_TEXT": "Auf Updates überprüfen",
+  "CF_CUSTOM_EEPROM_TEXT": "Benutzerdefinierter EEPROM-Bereich",
   "CAT_GENERAL_TEXT": "Generell",
   "CAT_IPV4_TEXT": "Netzwerk",
   "CAT_MQTT_TEXT": "MQTT",
