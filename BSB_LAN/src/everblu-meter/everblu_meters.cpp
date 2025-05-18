@@ -15,14 +15,14 @@
 float everblu_scanFrequency433MHz(bool restart) {
     static float fStart = -1.0f;
     static float fEnd = -1.0f;
-    static float fCheck = 433.76f;
+    static float fCheck = SWEEP_FREQUENCY_MIN;
     static bool scanDone = false;
     if (restart) {
         // Restart scan counters
         printToDebug("###### FREQUENCY DISCOVERY ENABLED (433 MHz) ######\nReady to run new sweep.\n");
         fStart = -1.0f;
         fEnd = -1.0f;
-        fCheck = 433.76f;
+        fCheck = SWEEP_FREQUENCY_MIN;
         scanDone = false;
         return -fCheck;
     } else if (scanDone) {
@@ -33,7 +33,7 @@ float everblu_scanFrequency433MHz(bool restart) {
     printFmtToDebug("\n------------------------------\nStarting next frequency sweep step at: %f.\n------------------------------\n", fCheck);
     
     // Check if still within check range
-    if (fCheck < 433.890f) {
+    if (fCheck < SWEEP_FREQUENCY_MAX) {
         printFmtToDebug("Test frequency : %f\n", fCheck);
         cc1101_init(fCheck);
         struct tmeter_data meter_data = get_meter_data();
@@ -49,15 +49,15 @@ float everblu_scanFrequency433MHz(bool restart) {
                 // Otherwise keep updating the end point
                 fEnd = fCheck;
             }
-            fCheck += 0.0005f;
+            fCheck += SWEEP_FREQUENCY_STEP;
             return -fCheck;
         } else if (fStart > 0) {
             // If we were in a valid frequency band, then an error now indicates we have gone beyond the valid range.
             printFmtToDebug("\n------------------------------\nLast valid frequency : %f\n------------------------------\n", fEnd);
-            fCheck = 433.890f;
+            fCheck = SWEEP_FREQUENCY_MAX;
         } else {
             // Not valid. Move to next frequency and return that scan still in progress.
-            fCheck += 0.0005f;
+            fCheck += SWEEP_FREQUENCY_STEP;
             return -fCheck;
         }   
     }
@@ -98,7 +98,7 @@ bool everblu_setFrequency(float frequency) {
         return false;
     }
     // Error if not valid frequency
-    if ((frequency != -1.0f) && ((frequency < 433.0f) || (frequency > 434.0f))) {
+    if ((frequency != -1.0f) && ((frequency < CC1101_FREQUENCY_MIN) || (frequency > CC1101_FREQUENCY_MAX))) {
         return false;
     }
     // Set the new frequency
@@ -123,7 +123,7 @@ bool everblu_initialise(long *meter_data) {
         meter_data[EVERBLU_METER_BATTERY] = config->lastBatteryLeft;
     }
     // Reset frequency to unknwon if out of range
-    if ((config->frequency < 433.0f) || (config->frequency > 434.0f)) {
+    if ((config->frequency < CC1101_FREQUENCY_MIN) || (config->frequency > CC1101_FREQUENCY_MAX)) {
         config->frequency = -1.0f;
     }
     // Check that hardware exists without actually configuring the RF
