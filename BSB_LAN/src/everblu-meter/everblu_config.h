@@ -18,5 +18,6 @@
 
 
 #define METER_READ_HOUR  9   // Hour to start trying to read meter
+#define METER_READ_WKDAY 3   // Day of week to read meter. Sunday = 0. Setting to -1 attempts read every day.
 
 #endif

@@ -52,20 +52,23 @@ if (has_everblu && everblu_setFrequency(custom_floats[0])) {
     // If there are no retries remaining, check if we need to restart reading
     if (!meterReadRetries) {
       // Check the current hour
-      int currentHour;
-      #if defined(ESP32)
+      int theHour, theDayOfWeek;
+#if defined(ESP32)
       struct tm now;
       getLocalTime(&now,100);
-      currentHour = now.tm_hour;
-      #else
-      currentHour = hour();
-      #endif
+      theHour = now.tm_hour;
+      theDayOfWeek = now.tm_wday;
+#else
+      theHour = hour();
+      theDayOfWeek = weekday() - 1;
+#endif
       // If it equals the restart hour
-      if (currentHour == METER_READ_HOUR) {
+      if (theHour == METER_READ_HOUR && ((METER_READ_WKDAY < 0) || (theDayOfWeek == METER_READ_WKDAY))) {
         // Then allow reading the meter again.
         meterReadRetries = 6;
       }
     }
-  
+    
+    
   }
 }
