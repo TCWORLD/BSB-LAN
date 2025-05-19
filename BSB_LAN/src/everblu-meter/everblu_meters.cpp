@@ -1,10 +1,37 @@
 
 #include "src/everblu-meter/everblu_meters.h" // Include EverBlu meter communication library
 
-#if defined(ESP32)
-#include <esp_task_wdt.h>
-#endif
-  
+static everblu_config_t *config = NULL;
+
+// Extract meter data from config
+static void everblu_lastKnownMeterRead(long* meter_data) {
+    if (meter_data) {
+        meter_data[EVERBLU_METER_LITRES] = config->lastLitres;
+        meter_data[EVERBLU_METER_READCOUNT] = config->lastReadCount;
+        meter_data[EVERBLU_METER_BATTERY] = config->lastBatteryLeft;
+    }
+}
+
+// Extracts meter structure and populates config and meter data export
+static void everblu_populateMeterData(struct tmeter_data* meter_read, long *meter_data) {
+    
+    // Print the raw data
+    printFmtToDebug("Consumption   : %d Liters\n", meter_read->liters);
+    printFmtToDebug("Battery left  : %d Months\n", meter_read->battery_left);
+    printFmtToDebug("Read counter  : %d times\n", meter_read->reads_counter);
+    printFmtToDebug("Working hours : from %02dH to %02d\n", meter_read->time_start, meter_read->time_end);
+    printFmtToDebug("Frequency     : %0.4f\n", meter_read->frequency);
+    printFmtToDebug("RSSI/CRC/LQI  : %ddBm / %s / %d\n", meter_read->rssi, meter_read->crcok ? "OK" : "FAIL", meter_read->lqi);
+    
+    // Update last known values
+    config->lastLitres = meter_read->liters;
+    config->lastReadCount = meter_read->reads_counter;
+    config->lastBatteryLeft = meter_read->battery_left;
+        
+    // And return data if required
+    everblu_lastKnownMeterRead(meter_data);
+}
+
 // Function to scan for the correct frequency in the 433 MHz range
 //  - Non-blocking. Will perform one frequency check per call
 //  - set restart to true to restart scanning from first frequency. 
@@ -12,7 +39,9 @@
 //  - returns -1.0f if all frequencies scanned but nothing found
 //  - returns -fCheck, indicating next frequency to be scanned
 //  - returns +ve frequency if valid frequency is found.
-float everblu_scanFrequency433MHz(bool restart) {
+//  - If provided, meter_data will be populated with any data found
+//    during a successful scan.
+float everblu_scanFrequency433MHz(bool restart, long *meter_data) {
     static float fStart = -1.0f;
     static float fEnd = -1.0f;
     static float fCheck = SWEEP_FREQUENCY_MIN;
@@ -36,15 +65,15 @@ float everblu_scanFrequency433MHz(bool restart) {
     if (fCheck < SWEEP_FREQUENCY_MAX) {
         printFmtToDebug("Test frequency : %f\n", fCheck);
         cc1101_init(fCheck);
-        struct tmeter_data meter_data = get_meter_data();
-        if (meter_data.error > 0) {
+        struct tmeter_data meter_read = get_meter_data();
+        if (meter_read.error > 0) {
             // Found a meter
             if (fStart < 0) {
                 // If this is the first one, log the start of valid frequency range
                 fStart = fCheck;
                 fEnd = fCheck;
                 printFmtToDebug("\n------------------------------\nFirst valid frequency : %f\n------------------------------\n", fCheck);
-                printFmtToDebug("Liters : %d\nBattery (in months) : %d\nCounter : %d\n\n", meter_data.liters, meter_data.battery_left, meter_data.reads_counter);
+                everblu_populateMeterData(&meter_read, meter_data);
             } else {
                 // Otherwise keep updating the end point
                 fEnd = fCheck;
@@ -76,8 +105,6 @@ float everblu_scanFrequency433MHz(bool restart) {
         return -1.0f;
     }
 }
-
-static everblu_config_t *config = NULL;
 
 void everblu_setConfig(everblu_config_t *cfg) {
     config = cfg;
@@ -129,11 +156,7 @@ bool everblu_initialise(long *meter_data) {
         config->cfgSize = sizeof(*config);
     }
     // Populate meter data with last known values if requested
-    if (meter_data) {
-        meter_data[EVERBLU_METER_LITRES] = config->lastLitres;
-        meter_data[EVERBLU_METER_READCOUNT] = config->lastReadCount;
-        meter_data[EVERBLU_METER_BATTERY] = config->lastBatteryLeft;
-    }
+    everblu_lastKnownMeterRead(meter_data);
     // Reset frequency to unknwon if out of range
     if ((config->frequency < CC1101_FREQUENCY_MIN) || (config->frequency > CC1101_FREQUENCY_MAX)) {
         config->frequency = -1.0f;
@@ -146,10 +169,16 @@ bool everblu_initialise(long *meter_data) {
     return hasRf && config->enable;
 }
 
-bool everblu_readMeter(long *meter_data) {
-#if defined(ESP32)
-    esp_task_wdt_reset();
-#endif
+// Read the meter.
+//  - If LastKnown is true, then will return values from config and not try and talk to meter
+//  - Otherwise will talk to meter, and if successful, last known values in config will be updated.
+//  - if non-null, will populate meter_data array. Must be EVERBLU_DATA_COUNT elements long.
+bool everblu_readMeter(bool lastKnown, long* meter_data) {
+    if (lastKnown) {
+        everblu_lastKnownMeterRead(meter_data);
+        return true;
+    }    
+    
     // Initialise the controller to the selected frequency if known
     float frequency = everblu_getFrequency();
     if (frequency < 0.0f) return false; // Can't run, don't know freq.
@@ -160,26 +189,9 @@ bool everblu_readMeter(long *meter_data) {
     if (meter_read.error <= 0)
         return false;
     
-    // Print the raw data
-    printFmtToDebug("Consumption   : %d Liters\n", meter_read.liters);
-    printFmtToDebug("Battery left  : %d Months\n", meter_read.battery_left);
-    printFmtToDebug("Read counter  : %d times\n", meter_read.reads_counter);
-    printFmtToDebug("Working hours : from %02dH to %02d\n", meter_read.time_start, meter_read.time_end);
-    printFmtToDebug("Frequency     : %0.4f\n", meter_read.frequency);
-    printFmtToDebug("RSSI/CRC/LQI  : %ddBm / %s / %d\n", meter_read.rssi, meter_read.crcok ? "OK" : "FAIL", meter_read.lqi);
+    // Populate meter data array and save to config.
+    everblu_populateMeterData(&meter_read, meter_data);
     
-    // Update last known values
-    config->lastLitres = meter_read.liters;
-    config->lastReadCount = meter_read.battery_left;
-    config->lastBatteryLeft = meter_read.reads_counter;
-        
-    // And return data if required
-    if (meter_data) {
-        meter_data[EVERBLU_METER_LITRES] = config->lastLitres;
-        meter_data[EVERBLU_METER_READCOUNT] = config->lastReadCount;
-        meter_data[EVERBLU_METER_BATTERY] = config->lastBatteryLeft;
-    }
-
     // Put to sleep
     cc1101_sleep();
     return true;

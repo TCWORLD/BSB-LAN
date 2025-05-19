@@ -45,7 +45,9 @@ typedef struct __attribute__((packed)) {
 //  - returns -1.0f if all frequencies scanned but nothing found
 //  - returns -fCheck, indicating next frequency to be scanned
 //  - returns +ve frequency if valid frequency is found.
-float everblu_scanFrequency433MHz(bool restart);
+//  - If provided, meter_data will be populated with any data found
+//    during a successful scan.
+float everblu_scanFrequency433MHz(bool restart, long *meter_data = NULL);
 
 // Pass in a pointer to a RAM buffer which will be used to store config data
 //  - cfg must point to memory which is at least sizeof(everblu_config_t) bytes long
@@ -58,7 +60,7 @@ void everblu_setConfig(everblu_config_t* cfg);
 //  - returns false if initialisation fails.
 //  - if non-null, will populate meter_data with last known values. Array
 //    must be EVERBLU_DATA_COUNT elements long.
-bool everblu_initialise(long* meter_data);
+bool everblu_initialise(long* meter_data = NULL);
 
 // Set selected frequency for meter
 //  - Returns false if invalid.
@@ -69,8 +71,9 @@ bool everblu_setFrequency(float frequency);
 float everblu_getFrequency();
 
 // Read the meter.
-//  - Last known values in config will be updated.
+//  - If LastKnown is true, then will return values from config and not try and talk to meter
+//  - Otherwise will talk to meter, and if successful, last known values in config will be updated.
 //  - if non-null, will populate meter_data array. Must be EVERBLU_DATA_COUNT elements long.
-bool everblu_readMeter(long* meter_data);
+bool everblu_readMeter(bool lastKnown, long* meter_data = NULL);
 
 #endif
