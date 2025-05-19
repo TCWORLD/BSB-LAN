@@ -5,16 +5,19 @@
 // If we have the RF interface, and the frequency line is valid
 if (has_everblu && everblu_setFrequency(custom_floats[0])) {
   
+  static uint8_t meterReadRetries = 6;
+  
   // Check if we have a frequency set
   if (custom_floats[0] == -1.0f) {
     // Meter scanning mode
     
     // Perform next scan
-    float scanResult = everblu_scanFrequency433MHz(false);
+    float scanResult = everblu_scanFrequency433MHz(false, custom_longs);
     if (scanResult >= 0.0f) {
       // Non-negative means a frequency was found.
       custom_floats[0] = scanResult;
       custom_floats[1] = 0.0f; // Scan complete
+      meterReadRetries = 0; // No retries until next day as we've got the meter reading.
     } else if (scanResult == -1.0f) {
       // Scan failed to find meter.
       custom_floats[0] = 0.0f; // Set invalid frequency in register. This must be changed to -1.0f again by user to restart scan
@@ -30,14 +33,13 @@ if (has_everblu && everblu_setFrequency(custom_floats[0])) {
   
     // Try to read the meter once per hour until a successful read
     // We try for at most 6 hours.
-    static uint8_t meterReadRetries = 6;
     if (meterReadRetries) {
       // If there are retries remaining, keep trying to read once per hour
       if ((custom_timer - custom_timer_compare) >= 3600000) {    // every 3600 seconds
         custom_timer_compare = custom_timer;
         printToDebug("Attempting to read water meter!\r\n");
         // Try reading
-        if (everblu_readMeter(custom_longs)) {
+        if (everblu_readMeter(false, custom_longs)) {
           // Success. No more retries until next day
           meterReadRetries = 0;
         } else {
