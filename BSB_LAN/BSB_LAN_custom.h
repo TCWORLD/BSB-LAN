@@ -32,6 +32,7 @@ if (has_everblu && everblu_setFrequency(custom_floats[METER_CUSTOMFLOAT_METER_FR
       custom_floats[METER_CUSTOMFLOAT_METER_FREQUENCY] = scanResult;
       custom_floats[METER_CUSTOMFLOAT_SCAN_FREQUENCY] = 0.0f; // Scan complete
       meterReadRetries = 0; // No retries until next read day as we've got the meter reading.
+      writeToEEPROM(CF_CUSTOM_EEPROM); // Commit new frequency config to EEPROM
     } else if (scanResult == -1.0f) {
       // Scan failed to find meter.
       custom_floats[METER_CUSTOMFLOAT_METER_FREQUENCY] = 0.0f; // Set invalid frequency in register. This must be changed to -1.0f again by user to restart scan
@@ -56,6 +57,7 @@ if (has_everblu && everblu_setFrequency(custom_floats[METER_CUSTOMFLOAT_METER_FR
         if (everblu_readMeter(false, &custom_longs[METER_CUSTOMLONG_METER_DATA])) {
           // Success. No more retries until next read day
           meterReadRetries = 0;
+          writeToEEPROM(CF_CUSTOM_EEPROM); // Commit last known reading to EEPROM
         } else {
           // Failed read. One less try remaining.
           meterReadRetries--;
