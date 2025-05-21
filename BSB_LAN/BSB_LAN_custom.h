@@ -6,8 +6,10 @@
 if (has_everblu && everblu_setFrequency(custom_floats[METER_CUSTOMFLOAT_METER_FREQUENCY])) {
   
   static uint8_t meterReadRetries = 0;
+  static int theDayOfWeekPrev = -1;
+  static bool daysReadIssued = false;
   
-  // Check the current hour
+  // Check the current hour and day of the week
   int theHour, theDayOfWeek;
 #if defined(ESP32)
   struct tm now;
@@ -20,6 +22,13 @@ if (has_everblu && everblu_setFrequency(custom_floats[METER_CUSTOMFLOAT_METER_FR
 #endif
   custom_longs[METER_CUSTOMLONG_CURRENT_HOUR] = theHour;
   custom_longs[METER_CUSTOMLONG_CURRENT_DAY] = theDayOfWeek;
+  
+  // If the day of the week has just changed, then allow issuing of new read requests.
+  // This is to prevent reissuing the read on the same day multiple times.
+  if (theDayOfWeek != theDayOfWeekPrev) {
+    daysReadIssued = false;
+  }
+  theDayOfWeekPrev = theDayOfWeek;
   
   // Check if we have a frequency set
   if (custom_floats[METER_CUSTOMFLOAT_METER_FREQUENCY] == -1.0f) {
@@ -65,12 +74,15 @@ if (has_everblu && everblu_setFrequency(custom_floats[METER_CUSTOMFLOAT_METER_FR
       }
     }
 
-    // If there are no retries remaining, check if we need to restart reading
-    if (!meterReadRetries) {
-      // If it equals the restart hour
+    // If there are no retries remaining, and we haven't already issued a read request
+    // for the current day, then check if we need to issue a read request
+    if (!meterReadRetries && !daysReadIssued) {
+      // If it equals the read hour, on a read day.
       if (theHour == METER_READ_HOUR && ((METER_READ_WKDAY < 0) || (theDayOfWeek == METER_READ_WKDAY))) {
         // Then allow reading the meter again.
         meterReadRetries = 6;
+        // Todays read request has been issued.
+        daysReadIssued = true;
       }
     }
   }
