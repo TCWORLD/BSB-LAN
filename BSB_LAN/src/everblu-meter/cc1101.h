@@ -17,7 +17,8 @@ struct tmeter_data {
   float frequency;
 };
 
-#define REG_DEFAULT 	0x10AF75 // CC1101 register values for 433.82MHz
+#define REG_DEFAULT_LOG "433.82MHz"
+#define REG_DEFAULT     0x10AF75 // CC1101 register value for default frequency
 
 void setMHZ(float mhz);
 void setFREQxRegister(uint32_t freqx) ;

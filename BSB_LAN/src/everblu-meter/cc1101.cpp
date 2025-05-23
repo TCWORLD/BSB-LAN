@@ -108,13 +108,13 @@ uint8_t CC1101_lqi;
 int wiringPiSPIDataRW(int channel, unsigned char *data, int len)
 {
   if (!_spi_speed) {
-    echo_debug(debug_out, "Wrong SPI Speed %dKHz:\n", _spi_speed/1000 );
+    optPrintFmtToDebug(debug_out, "Wrong SPI Speed %dKHz:\n", _spi_speed/1000 );
     return -1;
   }
 
   SPI.beginTransaction(SPISettings(_spi_speed, MSBFIRST, SPI_MODE0));
   digitalWrite(SPI_SS, 0);
-  //echo_debug(debug_out, "wiringPiSPIDataRW(0x%02X, %d)\n", (len > 0) ? data[0] : 'X' , len);
+  //optPrintFmtToDebug(debug_out, "wiringPiSPIDataRW(0x%02X, %d)\n", (len > 0) ? data[0] : 'X' , len);
   SPI.transfer(data, len);
   digitalWrite(SPI_SS, 1);
   SPI.endTransaction();
@@ -184,7 +184,7 @@ void SPIReadBurstReg(uint8_t spi_instr, uint8_t *pArr, uint8_t len)
   wiringPiSPIDataRW(0, rbuf, len + 1);
   for (i = 0; i < len; i++) {
     pArr[i] = rbuf[i + 1];
-    //echo_debug(debug_out, "SPI_arr_read: 0x%02X\n", pArr[i]);
+    //optPrintFmtToDebug(debug_out, "SPI_arr_read: 0x%02X\n", pArr[i]);
   }
   CC1101_status_FIFO_ReadByte = rbuf[0] & 0x0F;
   CC1101_status_state = (rbuf[0] >> 4) & 0x0F;
@@ -197,7 +197,7 @@ void SPIWriteBurstReg(uint8_t spi_instr, uint8_t *pArr, uint8_t len)
   tbuf[0] = spi_instr | WRITE_BURST;
   for (i = 0; i < len; i++) {
     tbuf[i + 1] = pArr[i];
-    //echo_debug(debug_out, "SPI_arr_write: 0x%02X\n", tbuf[i+1]);
+    //optPrintFmtToDebug(debug_out, "SPI_arr_write: 0x%02X\n", tbuf[i+1]);
   }
   wiringPiSPIDataRW(0, tbuf, len + 1);
   CC1101_status_FIFO_FreeByte = tbuf[len] & 0x0F;
@@ -224,7 +224,7 @@ void CC1101_CMD(uint8_t spi_instr)
 {
   uint8_t tbuf[1] = { 0 };
   tbuf[0] = spi_instr | WRITE_SINGLE_BYTE;
-  //echo_debug(debug_out, "SPI_data: 0x%02X\n", tbuf[0]);
+  //optPrintFmtToDebug(debug_out, "SPI_data: 0x%02X\n", tbuf[0]);
   wiringPiSPIDataRW(0, tbuf, 1);
   CC1101_status_state = (tbuf[0] >> 4) & 0x0F;
 }
@@ -322,7 +322,7 @@ void cc1101_configureRF_0(float freq, uint32_t freqx)
   } else if ( freqx != 0 ) {
     setFREQxRegister(freqx);
   } else {
-    fprintf(stderr, "Wrong frequency parameter, set to 433.82MHz\n");
+    printToDebug("WARNING: Wrong frequency parameter, set to default frequency of " REG_DEFAULT_LOG ".\n");
     //setMHZ(433.8200f);
     setFREQxRegister(REG_DEFAULT); // value for 433.82MHz is 0x10AF75
   }
@@ -431,7 +431,7 @@ bool get_cc1101_version(bool show)
   uint8_t version = halRfReadReg(VERSION_ADDR);
   bool found = version!=0x00 && version!=0xFF ;
   if (show) {
-    echo_debug(debug_out, "CC1101 Version : 0x%02X%02X %s\n", part_number, version);  
+    optPrintFmtToDebug(debug_out, "CC1101 Version : 0x%02X%02X %s\n", part_number, version);  
   }
   return version==0x04 || version==0x14;
 }
@@ -449,24 +449,26 @@ void show_cc1101_registers_settings(void)
   SPIReadBurstReg(0, config_reg_verify, CFG_REGISTER);   //reads all 47 config register from cc1100 "359.63us"
   SPIReadBurstReg(PATABLE_ADDR, Patable_verify, 8);    //reads output power settings from cc1100 "104us"
 
-  echo_debug(debug_out, "Config Register in hex:\n");
-  echo_debug(debug_out, " 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F\n");
-  for (i = 0; i < CFG_REGISTER; i++) {
-    // showes rx_buffer for debug
-    echo_debug(debug_out, "%02X ", config_reg_verify[i]);
-    if (i == 15 || i == 31 || i == 47 || i == 63) {
-      //just for beautiful output style
-      echo_debug(debug_out, "\n");
+  if (debug_out) {
+    printToDebug("Config Register in hex:\n");
+    printToDebug(" 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F\n");
+    for (i = 0; i < CFG_REGISTER; i++) {
+      // showes rx_buffer for debug
+      printFmtToDebug("%02X ", config_reg_verify[i]);
+      if (i == 15 || i == 31 || i == 47 || i == 63) {
+        //just for beautiful output style
+        writelnToDebug();
+      }
     }
-  }
-  echo_debug(debug_out, "\n");
-  echo_debug(debug_out, "PaTable:\n");
+    writelnToDebug();
+    printToDebug("PaTable:\n");
 
-  for (i = 0; i < 8; i++) {
-    //showes rx_buffer for debug
-    echo_debug(debug_out, "%02X ", Patable_verify[i]);
+    for (i = 0; i < 8; i++) {
+      //showes rx_buffer for debug
+      printFmtToDebug("%02X ", Patable_verify[i]);
+    }
+    writelnToDebug();
   }
-  echo_debug(debug_out, "\n");
 }
 
 uint8_t is_look_like_radian_frame(uint8_t* buffer, size_t len)
@@ -502,14 +504,14 @@ uint8_t cc1101_check_packet_received(void)
       }
     }
     if (is_look_like_radian_frame(rxBuffer, pktLen)) {
-      echo_debug(debug_out, "\n");
+      optPrintFmtToDebug(debug_out, "\n");
       print_time();
       uint8_t crcOk = (CC1101_lqi & 0x80) ? 1 : 0;
-      echo_debug(debug_out, " bytes=%u rssi=%u lqi=%u cok=%u F_est=%d ", pktLen, CC1101_rssi, CC1101_lqi & 0x7F, crcOk, l_freq_est);
+      optPrintFmtToDebug(debug_out, " bytes=%u rssi=%u lqi=%u cok=%u F_est=%d ", pktLen, CC1101_rssi, CC1101_lqi & 0x7F, crcOk, l_freq_est);
       show_in_hex_one_line(rxBuffer, pktLen);
       //show_in_bin(rxBuffer,l_nb_byte);       
     } else {
-      echo_debug(debug_out, ".");
+      optPrintFmtToDebug(debug_out, ".");
     }
     fflush(stdout);
     return true;
@@ -526,7 +528,7 @@ uint8_t cc1101_wait_for_packet(int milliseconds)
     if (cc1101_check_packet_received()) {
       return true;
     } else if (i == milliseconds - 1) {
-      //echo_debug(debug_out, "no packet received!\n");
+      //optPrintFmtToDebug(debug_out, "no packet received!\n");
       return false;
     }
   }
@@ -542,12 +544,12 @@ struct tmeter_data parse_meter_report(uint8_t *decoded_buffer, uint8_t size)
     data.rssi_dbm = cc1100_rssi_convert2dbm(CC1101_rssi);  // convert to dBm
     data.lqi = CC1101_lqi & 0x7F;
     data.crcok = (CC1101_lqi & 0x80) ? 1 : 0;
-    //echo_debug(debug_out, "\n%u/%u/20%u %u:%u:%u ",decoded_buffer[24],decoded_buffer[25],decoded_buffer[26],decoded_buffer[28],decoded_buffer[29],decoded_buffer[30]);
-    //echo_debug(debug_out, "%u litres ",decoded_buffer[18]+decoded_buffer[19]*256 + decoded_buffer[20]*65536 + decoded_buffer[21]*16777216);
+    //optPrintFmtToDebug(debug_out, "\n%u/%u/20%u %u:%u:%u ",decoded_buffer[24],decoded_buffer[25],decoded_buffer[26],decoded_buffer[28],decoded_buffer[29],decoded_buffer[30]);
+    //optPrintFmtToDebug(debug_out, "%u litres ",decoded_buffer[18]+decoded_buffer[19]*256 + decoded_buffer[20]*65536 + decoded_buffer[21]*16777216);
     data.liters = decoded_buffer[18] + decoded_buffer[19] * 256 + decoded_buffer[20] * 65536 + decoded_buffer[21] * 16777216;
   }
   if (size >= 48) {
-    //echo_debug(debug_out, "Num %u %u Mois %uh-%uh ",decoded_buffer[48], decoded_buffer[31],decoded_buffer[44],decoded_buffer[45]);
+    //optPrintFmtToDebug(debug_out, "Num %u %u Mois %uh-%uh ",decoded_buffer[48], decoded_buffer[31],decoded_buffer[44],decoded_buffer[45]);
     data.reads_counter = decoded_buffer[48];
     data.battery_left = decoded_buffer[31];
     data.time_start = decoded_buffer[44];
@@ -575,7 +577,7 @@ uint8_t decode_4bitpbit_serial(uint8_t *rxBuffer, int l_total_byte, uint8_t* dec
 
   for (i = 0; i < l_total_byte; i++) {
     current_Rx_Byte = rxBuffer[i];
-    //echo_debug(debug_out, "0x%02X ", rxBuffer[i]);
+    //optPrintFmtToDebug(debug_out, "0x%02X ", rxBuffer[i]);
     for (j = 0; j < 8; j++) {
       if ((current_Rx_Byte & 0x80) == bit_pol) {
         bit_cnt++;
@@ -597,15 +599,15 @@ uint8_t decode_4bitpbit_serial(uint8_t *rxBuffer, int l_total_byte, uint8_t* dec
             decoded_buffer[dest_byte_cnt] |= bit_pol;
           }
           dest_bit_cnt++;
-          //if ((dest_bit_cnt ==9) && (!bit_pol)){  echo_debug(debug_out, "stop bit error9"); return dest_byte_cnt;}
+          //if ((dest_bit_cnt ==9) && (!bit_pol)){  optPrintFmtToDebug(debug_out, "stop bit error9"); return dest_byte_cnt;}
           if ((dest_bit_cnt == 10) && (!bit_pol)) {
-            echo_debug(debug_out, "stop bit error10");
+            optPrintFmtToDebug(debug_out, "stop bit error10");
             return dest_byte_cnt;
           }
           if ((dest_bit_cnt >= 11) && (!bit_pol)) {
             // start bit
             dest_bit_cnt = 0;
-            //echo_debug(debug_out, " dec[%i]=0x%02X \n", dest_byte_cnt, decoded_buffer[dest_byte_cnt]);
+            //optPrintFmtToDebug(debug_out, " dec[%i]=0x%02X \n", dest_byte_cnt, decoded_buffer[dest_byte_cnt]);
             dest_byte_cnt++;
           }
         }
@@ -631,14 +633,10 @@ int receive_radian_frame(int size_byte, int rx_tmo_ms, uint8_t*rxBuffer, int rxB
   int l_tmo = 0;
   int8_t  l_freq_est;
 
-  if (debug_out) {
-    echo_debug(debug_out, "\nsize_byte=%d  l_radian_frame_size_byte=%d\n", size_byte, l_radian_frame_size_byte);
-  }
+  optPrintFmtToDebug(debug_out, "\nsize_byte=%d  l_radian_frame_size_byte=%d\n", size_byte, l_radian_frame_size_byte);
 
   if (l_radian_frame_size_byte * 4 > rxBuffer_size) {
-    if (debug_out) {
-      echo_debug(debug_out, "buffer too small\n");
-    }
+    optPrintFmtToDebug(debug_out, "buffer too small\n");
     return 0;
   }
   CC1101_CMD(SFRX);
@@ -657,9 +655,7 @@ int receive_radian_frame(int size_byte, int rx_tmo_ms, uint8_t*rxBuffer, int rxB
     l_tmo++;
   }
   if (l_tmo < rx_tmo_ms) {
-    if (debug_out) {
-      echo_debug(debug_out, "GDO0! (0, %d) ", l_tmo);
-    }
+    optPrintFmtToDebug(debug_out, "GDO0! (0, %d) ", l_tmo);
   } else {
     return 0;
   }
@@ -672,9 +668,7 @@ int receive_radian_frame(int size_byte, int rx_tmo_ms, uint8_t*rxBuffer, int rxB
     }
   }
   if (l_tmo < rx_tmo_ms && l_byte_in_rx > 0) {
-    if (debug_out) {
-      echo_debug(debug_out, "1st synch received (%d) ", l_byte_in_rx);
-    }
+    optPrintFmtToDebug(debug_out, "1st synch received (%d) ", l_byte_in_rx);
   } else {
     return 0;
   }
@@ -683,10 +677,7 @@ int receive_radian_frame(int size_byte, int rx_tmo_ms, uint8_t*rxBuffer, int rxB
   l_freq_est = halRfReadReg(FREQEST_ADDR);
   CC1101_rssi = cc1100_rssi_convert2dbm(halRfReadReg(RSSI_ADDR));
   
-  if (debug_out) {
-    uint8_t crcOk = (CC1101_lqi & 0x80) ? 1 : 0;
-    echo_debug(debug_out, " bytes=%u rssi=%d lqi=%u cok=%u F_est=%d ", l_byte_in_rx, CC1101_rssi, CC1101_lqi & 0x7F, crcOk, l_freq_est);
-  }
+  optPrintFmtToDebug(debug_out, " bytes=%u rssi=%d lqi=%u cok=%u F_est=%d ", l_byte_in_rx, CC1101_rssi, CC1101_lqi & 0x7F, ((CC1101_lqi & 0x80) ? 1 : 0), l_freq_est);
 
   halRfWriteReg(SYNC1, 0xFF);   //11111111
   halRfWriteReg(SYNC0, 0xF0);   //11110000 la fin du synch pattern et le bit de start
@@ -704,9 +695,7 @@ int receive_radian_frame(int size_byte, int rx_tmo_ms, uint8_t*rxBuffer, int rxB
   }
   
   if (l_tmo < rx_tmo_ms) {
-    if (debug_out) {
-      echo_debug(debug_out, "GDO0! (1, %d) ", l_tmo);
-    }
+    optPrintFmtToDebug(debug_out, "GDO0! (1, %d) ", l_tmo);
   } else {
     return 0;
   }
@@ -725,16 +714,16 @@ int receive_radian_frame(int size_byte, int rx_tmo_ms, uint8_t*rxBuffer, int rxB
   }
   
   if (l_tmo < rx_tmo_ms && l_total_byte > 0) {
-    echo_debug(debug_out, "frame received (%d)\n", l_total_byte);
+    optPrintFmtToDebug(debug_out, "frame received (%d)\n", l_total_byte);
   } else {
-    echo_debug(debug_out, "framing error (%d, %d)\n", l_total_byte, l_tmo);
+    optPrintFmtToDebug(debug_out, "framing error (%d, %d)\n", l_total_byte, l_tmo);
     return 0;
   }
 
   /*stop reception*/
   CC1101_CMD(SFRX);
   CC1101_CMD(SIDLE);
-  //echo_debug(debug_out, "RAW buffer");
+  //optPrintFmtToDebug(debug_out, "RAW buffer");
   //show_in_hex_array(rxBuffer,l_total_byte); //16ms pour 124b->682b , 7ms pour 18b->99byte
   /*restore default reg */
   halRfWriteReg(MDMCFG4, 0xF6); //Modem Configuration   RX filter BW = 58Khz
@@ -786,10 +775,8 @@ struct tmeter_data get_meter_data(void)
   CC1101_CMD(STX);  //sends the data store into transmit buffer over the air
   delay(10); //to give time for calibration 
   marcstate = halRfReadReg(MARCSTATE_ADDR); //to  update  CC1101_status_state
-  if (debug_out) {
-    echo_debug(debug_out, "MARCSTATE : raw:0x%02X  0x%02X free_byte:0x%02X sts:0x%02X sending 2s WUP...\n",
-                            marcstate, marcstate & 0x1F, CC1101_status_FIFO_FreeByte, CC1101_status_state);
-  }
+  optPrintFmtToDebug(debug_out, "MARCSTATE : raw:0x%02X  0x%02X free_byte:0x%02X sts:0x%02X sending 2s WUP...\n",
+                          marcstate, marcstate & 0x1F, CC1101_status_FIFO_FreeByte, CC1101_status_state);
   
   // in TX
   while ((CC1101_status_state == 0x02) && (tmo < TX_LOOP_OUT)) {
@@ -807,20 +794,16 @@ struct tmeter_data get_meter_data(void)
     } else {
       delay(130); //130ms time to free 39bytes FIFO space
       SPIWriteBurstReg(TX_FIFO_ADDR, txbuffer, 39);
-      if (debug_out) {
-        echo_debug(debug_out, "txbuffer:\n");
-        show_in_hex_array(&txbuffer[0], 39);
-      }
+      optPrintFmtToDebug(debug_out, "txbuffer:\n");
+      if (debug_out) show_in_hex_array(&txbuffer[0], 39);
       wup2send = 0xFF;
     }
     delay(10); tmo++;
     marcstate = halRfReadReg(MARCSTATE_ADDR); //read out state of cc1100 to be sure in IDLE and TX is finished this update also CC1101_status_state
-    //echo_debug(debug_out, "%ifree_byte:0x%02X sts:0x%02X\n",tmo,CC1101_status_FIFO_FreeByte,CC1101_status_state);      
+    //optPrintFmtToDebug(debug_out, "%ifree_byte:0x%02X sts:0x%02X\n",tmo,CC1101_status_FIFO_FreeByte,CC1101_status_state);      
   }
   
-  if (debug_out) {
-    echo_debug(debug_out, "%i free_byte:0x%02X sts:0x%02X\n", tmo, CC1101_status_FIFO_FreeByte, CC1101_status_state);
-  }
+  optPrintFmtToDebug(debug_out, "%i free_byte:0x%02X sts:0x%02X\n", tmo, CC1101_status_FIFO_FreeByte, CC1101_status_state);
   CC1101_CMD(SFTX); //flush the Tx_fifo content this clear the status state and put sate machin in IDLE
   //end of transition restore default register
   halRfWriteReg(MDMCFG2, 0x02); //Modem Configuration   2-FSK;  no Manchester ; 16/16 sync word bits detected   
@@ -829,9 +812,7 @@ struct tmeter_data get_meter_data(void)
   delay(30); //43ms de bruit
   /*34ms 0101...01  14.25ms 000...000  14ms 1111...11111  83.5ms de data acquitement*/
   if (!receive_radian_frame(0x12, 150, rxBuffer, sizeof(rxBuffer))) {
-    if (debug_out) {
-      echo_debug(debug_out, "TMO on REC\n");
-    }
+    optPrintFmtToDebug(debug_out, "TMO on REC\n");
   }
   delay(30); //50ms de 111111  , mais on a 7+3ms de printf et xxms calculs
   /*34ms 0101...01  14.25ms 000...000  14ms 1111...11111  582ms de data avec l'index */
@@ -843,10 +824,8 @@ struct tmeter_data get_meter_data(void)
   sdata.error = 0;
   
   if (rxBuffer_size) {
-    if (debug_out) {
-      //echo_debug(debug_out, "rxBuffer:\n");
-      //show_in_hex_array(rxBuffer, rxBuffer_size);
-    }
+    //optPrintFmtToDebug(debug_out, "rxBuffer:\n");
+    //if (debug_out) show_in_hex_array(rxBuffer, rxBuffer_size);
     meter_data_size = decode_4bitpbit_serial(rxBuffer, rxBuffer_size, meter_data);
     // show_in_hex(meter_data,meter_data_size);
     sdata = parse_meter_report(meter_data, meter_data_size);
@@ -855,13 +834,11 @@ struct tmeter_data get_meter_data(void)
       sdata.error = sdata.reads_counter;
     } else {
       sdata.error = -1;
-      echo_debug(debug_out, "Invalid on REC\n");
+      optPrintFmtToDebug(debug_out, "Invalid on REC\n");
     }
   } else {
-    if (debug_out) {
-      sdata.error = -2;
-      echo_debug(debug_out, "TMO on REC\n");
-    }
+    sdata.error = -2;
+    optPrintFmtToDebug(debug_out, "TMO on REC\n");
   }
   return sdata;
 }

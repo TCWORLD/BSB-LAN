@@ -12,7 +12,7 @@ extern void writelnToDebug();
 extern void printToDebug(char *format);
 extern void printToDebug(const char *format);
 
-#define echo_debug(doLog, ...) \
+#define optPrintFmtToDebug(doLog, ...) \
     if (doLog) printFmtToDebug(__VA_ARGS__)
 
 void show_in_hex(uint8_t* buffer, size_t len);
