@@ -2389,7 +2389,7 @@ void generateWebConfigPage(bool printOnly) {
             printToWebClient("pattern='((^|,)\\d{1,5}(\\.\\d)?((!|!-)\\d{1,3})?)+'");
             break;
           case CDT_BYTELIST:
-            printToWebClient("pattern='((^|,)(0|[1-9]\\d?|1\\d{2}|2[0-4]\\d|25[0-5]|0x[0-9A-Fa-f]{1,2}))+'");
+            printToWebClient("pattern='((^|,)(0|[1-9]\\d?|1\\d{2}|2[0-4]\\d|25[0-5]|0[xX][0-9A-Fa-f]{1,2}))+'");
             break;
           }
         printToWebClient(" value='");
