@@ -1,6 +1,7 @@
 
 #include "src/everblu-meter/everblu_meters.h" // Include EverBlu meter communication library
 
+/* File Statics */
 static everblu_config_t *config = NULL;
 
 // Extract meter data from config
@@ -30,6 +31,46 @@ static void everblu_populateMeterData(struct tmeter_data* meter_read, long *mete
         
     // And return data if required
     everblu_lastKnownMeterRead(meter_data);
+}
+
+// Returns true if the read hour
+bool everblu_isReadHour(int thisHour) {
+    if (!config) return false;
+    if (thisHour < 0 || thisHour > 23) return false;
+    return (config->readHour == thisHour); // For now there is only one read hour.
+}
+
+// Returns the next read hour
+//  Returns first read hour if thisHour = -1.
+//  Returns -1 if no read hour.
+int everblu_nextReadHour(int thisHour) {
+    if (!config) return -1;
+    return config->readHour; // For now there is only one read hour.
+}
+
+// Returns true if day of week is a read day
+//  DoW based on: 0 = Sunday, 1 = Monday, etc.
+bool everblu_isReadDay(int thisDay) {
+    if (!config) return false;
+    if (thisDay < 0 || thisDay > 6) return false;
+    return (config->readWkDays & _BV(thisDay));
+}
+
+// Returns the next day of week to read
+//  DoW based on: 0 = Sunday, 1 = Monday, etc.
+//  Returns first read day if thisDay = -1.
+//  Returns -1 if no read days.
+int everblu_nextReadDay(int thisDay) {
+    if (!config) return -1;
+    int readWkDays = config->readWkDays & 0x7F;
+    if (!readWkDays) return -1; // No read days
+    if (thisDay < 0) return __builtin_ctz(readWkDays);
+    thisDay %= 7;
+    // Create a 7-day mask where bit 0 is tomorrow.
+    int nextDayMask = ((readWkDays << 7) | readWkDays) >> (thisDay + 1);
+    // Count the number of trailing zeros to find out how many days
+    // from tomorrow, and add on tomorrows day to get absolute day of week. Mod 7 as only 7 days.
+    return (__builtin_ctz(nextDayMask) + thisDay + 1) % 7;
 }
 
 // Function to scan for the correct frequency in the 433 MHz range
@@ -140,8 +181,12 @@ bool everblu_initialise(long *meter_data) {
     // Check if initialised, and if not initialise it.
     if (config->cfgInit != 0xEB || !config->cfgVer || !config->cfgSize) {
         memset(config, 0, sizeof(*config));
+        // Default config fields
+        config->readHour = METER_READ_HOUR;
+        config->readWkDays = METER_READ_WKDAY;
         config->enable = 1; // Default to enabled
         config->frequency = -1.0f; // With no known frequency
+        // Version and structure info
         config->cfgSize = sizeof(*config);
         config->cfgVer = EVERBLU_CONFIG_VERSION;
         config->cfgInit = 0xEB; // Set magic word to mark as initialised
@@ -152,6 +197,11 @@ bool everblu_initialise(long *meter_data) {
     }
     // If size has changed update size and version fields.
     if ((config->cfgSize != sizeof(*config)) || (config->cfgVer != EVERBLU_CONFIG_VERSION)) {
+        // Ver 2 added fields:
+        if (config->cfgVer <= 1) {
+            config->readHour = METER_READ_HOUR;
+            config->readWkDays = METER_READ_WKDAY;
+        }
         config->cfgVer = EVERBLU_CONFIG_VERSION;
         config->cfgSize = sizeof(*config);
     }

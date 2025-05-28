@@ -2,11 +2,19 @@
  * Attempt to read the value from an everblu water meter once per day.
 */
 
+#ifdef __INTELLISENSE__
+
+#include "BSB_LAN_custom_global.h"
+
+int custom_loop(void) {
+#endif
+
 // If we have the RF interface, and the frequency line is valid
 if (has_everblu && everblu_setFrequency(custom_floats[METER_CUSTOMFLOAT_METER_FREQUENCY])) {
   
   static uint8_t meterReadRetries = 0;
   static int theDayOfWeekPrev = -1;
+  static int theHourPrev = -1;
   static bool daysReadIssued = false;
   
   // Check the current hour and day of the week
@@ -27,8 +35,13 @@ if (has_everblu && everblu_setFrequency(custom_floats[METER_CUSTOMFLOAT_METER_FR
   // This is to prevent reissuing the read on the same day multiple times.
   if (theDayOfWeek != theDayOfWeekPrev) {
     daysReadIssued = false;
+    custom_longs[METER_CUSTOMLONG_READ_WKDAY] = everblu_nextReadDay(theDayOfWeek);
   }
   theDayOfWeekPrev = theDayOfWeek;
+  if (theHour != theHourPrev) {
+    custom_longs[METER_CUSTOMLONG_READ_HOUR] = everblu_nextReadHour(theHour);
+  }
+  theHourPrev = theHour;
   
   // Check if we have a frequency set
   if (custom_floats[METER_CUSTOMFLOAT_METER_FREQUENCY] == -1.0f) {
@@ -78,7 +91,7 @@ if (has_everblu && everblu_setFrequency(custom_floats[METER_CUSTOMFLOAT_METER_FR
     // for the current day, then check if we need to issue a read request
     if (!meterReadRetries && !daysReadIssued) {
       // If it equals the read hour, on a read day.
-      if (theHour == METER_READ_HOUR && ((METER_READ_WKDAY < 0) || (theDayOfWeek == METER_READ_WKDAY))) {
+      if (everblu_isReadHour(theHour) && everblu_isReadDay(theDayOfWeek)) {
         // Then allow reading the meter again.
         meterReadRetries = 6;
         // Todays read request has been issued.
@@ -89,3 +102,7 @@ if (has_everblu && everblu_setFrequency(custom_floats[METER_CUSTOMFLOAT_METER_FR
   
   custom_longs[METER_CUSTOMLONG_READ_ATTEMPTS] = meterReadRetries;
 }
+
+#ifdef __INTELLISENSE__
+}
+#endif

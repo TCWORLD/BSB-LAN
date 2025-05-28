@@ -25,7 +25,7 @@ typedef enum {
     EVERBLU_DATA_COUNT
 } everblu_data_t;
 
-#define EVERBLU_CONFIG_VERSION 0x01
+#define EVERBLU_CONFIG_VERSION 0x02
 
 typedef struct __attribute__((packed)) {
     uint8_t cfgInit; // Magic number to ensure config is initialised.
@@ -36,6 +36,9 @@ typedef struct __attribute__((packed)) {
     int lastLitres;
     int lastReadCount;
     int lastBatteryLeft;
+    uint8_t readHour;
+    uint8_t readWkDays;
+    uint8_t __pad[2];
 } everblu_config_t;
 
 // Function to scan for the correct frequency in the 433 MHz range
@@ -75,5 +78,21 @@ float everblu_getFrequency();
 //  - Otherwise will talk to meter, and if successful, last known values in config will be updated.
 //  - if non-null, will populate meter_data array. Must be EVERBLU_DATA_COUNT elements long.
 bool everblu_readMeter(bool lastKnown, long* meter_data = NULL);
+
+
+// Returns true if the read hour
+bool everblu_isReadHour(int thisHour);
+// Returns the next read hour
+//  Returns first read hour if thisHour = -1.
+//  Returns -1 if no read hour.
+int everblu_nextReadHour(int thisHour);
+// Returns true if day of week is a read day
+//  DoW based on: 0 = Sunday, 1 = Monday, etc.
+bool everblu_isReadDay(int thisDay);
+// Returns the next day of week to read
+//  DoW based on: 0 = Sunday, 1 = Monday, etc.
+//  Returns first read day if thisDay = -1.
+//  Returns -1 if no read days.
+int everblu_nextReadDay(int thisDay);
 
 #endif

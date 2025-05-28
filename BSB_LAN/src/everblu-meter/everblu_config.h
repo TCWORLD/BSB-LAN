@@ -16,8 +16,8 @@
 #define SWEEP_FREQUENCY_STEP 0.001f // Sweep frequency step
 #define SWEEP_FREQUENCY_MAX 433.98f // Sweep frequency range upper limit
 
-
-#define METER_READ_HOUR  9   // Hour to start trying to read meter
-#define METER_READ_WKDAY 3   // Day of week to read meter. Sunday = 0. Setting to -1 attempts read every day.
+// Default read limit configs
+#define METER_READ_HOUR  9       // Hour to start trying to read meter
+#define METER_READ_WKDAY _BV(3)  // Days of week to read meter as bitmask. Sunday = bit 0. Setting to -1 attempts read every day.
 
 #endif

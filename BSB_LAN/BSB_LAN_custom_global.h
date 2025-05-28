@@ -1,5 +1,8 @@
 // Add custom code for global functions here which will be included in the global section
 
+#ifndef BSB_LAN_CUSTOM_GLOBAL_H_
+#define BSB_LAN_CUSTOM_GLOBAL_H_
+
 #include "src/everblu-meter/everblu_meters.h" // Include EverBlu meter communication library
 
 enum {
@@ -17,3 +20,5 @@ enum {
 };
 
 bool has_everblu = false;
+
+#endif
