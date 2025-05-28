@@ -92,7 +92,7 @@ typedef enum{
 // Version 14 (remove fixed device family/variant)
 // Version 15 (control MQTT unit set, custom config region)
   CF_MQTT_UNITS, //Size: 1 byte. Unit of measure for MQTT: 0 - Localised, 1 - Home Assistant, 255 - none
-  CF_CUSTOM_EEPROM, //Size: 4 * 20 bytes. Region to support custom code storing persistent values. Accessed via 'custom_eeprom' array
+  CF_CUSTOM_EEPROM, //Size: 64 bytes. Region to support custom code storing persistent values. Accessed via 'custom_eeprom' array
   CF_LAST_OPTION //Virtual option. Must be last in enum. Only for internal usage.
 } cf_params;
 
