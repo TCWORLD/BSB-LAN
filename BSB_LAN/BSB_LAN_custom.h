@@ -9,39 +9,40 @@
 int custom_loop(void) {
 #endif
 
+// Check the current hour and day of the week
+int theHour, theDayOfWeek;
+#if defined(ESP32)
+struct tm now;
+getLocalTime(&now,100);
+theHour = now.tm_hour;
+theDayOfWeek = now.tm_wday;
+#else
+theHour = hour();
+theDayOfWeek = weekday() - 1;
+#endif
+custom_longs[METER_CUSTOMLONG_CURRENT_HOUR] = theHour;
+custom_longs[METER_CUSTOMLONG_CURRENT_DAY] = theDayOfWeek;
+
 // If we have the RF interface, and the frequency line is valid
 if (has_everblu && everblu_setFrequency(custom_floats[METER_CUSTOMFLOAT_METER_FREQUENCY])) {
   
   static uint8_t meterReadRetries = 0;
   static int theDayOfWeekPrev = -1;
-  static int theHourPrev = -1;
   static bool daysReadIssued = false;
   
-  // Check the current hour and day of the week
-  int theHour, theDayOfWeek;
-#if defined(ESP32)
-  struct tm now;
-  getLocalTime(&now,100);
-  theHour = now.tm_hour;
-  theDayOfWeek = now.tm_wday;
-#else
-  theHour = hour();
-  theDayOfWeek = weekday() - 1;
-#endif
-  custom_longs[METER_CUSTOMLONG_CURRENT_HOUR] = theHour;
-  custom_longs[METER_CUSTOMLONG_CURRENT_DAY] = theDayOfWeek;
+  // If this is the first run, report when the next read day/hour is
+  if (theDayOfWeekPrev == -1) {
+    // When checking next read times, include today and this hour. 
+    custom_longs[METER_CUSTOMLONG_READ_WKDAY] = everblu_nextReadDay(theDayOfWeek - 1);
+    custom_longs[METER_CUSTOMLONG_READ_HOUR] = everblu_nextReadHour(theHour - 1);
+  }
   
   // If the day of the week has just changed, then allow issuing of new read requests.
   // This is to prevent reissuing the read on the same day multiple times.
   if (theDayOfWeek != theDayOfWeekPrev) {
     daysReadIssued = false;
-    custom_longs[METER_CUSTOMLONG_READ_WKDAY] = everblu_nextReadDay(theDayOfWeek);
   }
   theDayOfWeekPrev = theDayOfWeek;
-  if (theHour != theHourPrev) {
-    custom_longs[METER_CUSTOMLONG_READ_HOUR] = everblu_nextReadHour(theHour);
-  }
-  theHourPrev = theHour;
   
   // Check if we have a frequency set
   if (custom_floats[METER_CUSTOMFLOAT_METER_FREQUENCY] == -1.0f) {
@@ -55,6 +56,9 @@ if (has_everblu && everblu_setFrequency(custom_floats[METER_CUSTOMFLOAT_METER_FR
       custom_floats[METER_CUSTOMFLOAT_SCAN_FREQUENCY] = 0.0f; // Scan complete
       meterReadRetries = 0; // No retries until next read day as we've got the meter reading.
       writeToEEPROM(CF_CUSTOM_EEPROM); // Commit new frequency config to EEPROM
+      // Update reported next read time
+      custom_longs[METER_CUSTOMLONG_READ_WKDAY] = everblu_nextReadDay(theDayOfWeek);
+      custom_longs[METER_CUSTOMLONG_READ_HOUR] = everblu_nextReadHour(theHour);
     } else if (scanResult == -1.0f) {
       // Scan failed to find meter.
       custom_floats[METER_CUSTOMFLOAT_METER_FREQUENCY] = 0.0f; // Set invalid frequency in register. This must be changed to -1.0f again by user to restart scan
@@ -84,6 +88,11 @@ if (has_everblu && everblu_setFrequency(custom_floats[METER_CUSTOMFLOAT_METER_FR
           // Failed read. One less try remaining.
           meterReadRetries--;
         }
+        if (!meterReadRetries) {
+          // If that was our last retry, work out when our next read is.
+          custom_longs[METER_CUSTOMLONG_READ_WKDAY] = everblu_nextReadDay(theDayOfWeek);
+          custom_longs[METER_CUSTOMLONG_READ_HOUR] = everblu_nextReadHour(theHour);
+        }
       }
     }
 
@@ -98,9 +107,14 @@ if (has_everblu && everblu_setFrequency(custom_floats[METER_CUSTOMFLOAT_METER_FR
         daysReadIssued = true;
       }
     }
+    
   }
   
   custom_longs[METER_CUSTOMLONG_READ_ATTEMPTS] = meterReadRetries;
+} else {
+  // No read days.
+  custom_longs[METER_CUSTOMLONG_READ_WKDAY] = -1;
+  custom_longs[METER_CUSTOMLONG_READ_HOUR] = -1;
 }
 
 #ifdef __INTELLISENSE__
